@@ -265,13 +265,14 @@
         .pill-neutral { background: var(--c-neutral); } body.dark-theme .pill-neutral { color: var(--c-neutral); border-color: var(--c-neutral); }
 
         .date-line { display: flex; align-items: center; font-size: 0.65rem; color: var(--text-meta); margin-top: 4px; font-weight: 500; font-family: 'Inter', sans-serif; max-height: 50px; opacity: 1; overflow: hidden; transition: all 0.4s ease-out; }
+        body.semester-mode .date-line { max-height: none; overflow: visible; align-items: flex-start; font-size: 0.58rem; line-height: 1.35; overflow-wrap: anywhere; }
         
         .status-dot { width: 5px; height: 5px; background-color: var(--dot-color); border-radius: 50%; display: inline-block; margin-right: 5px; animation: pulse 3s infinite ease-in-out; }
         @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(0, 230, 118, 0.3); opacity: 0.8; } 50% { box-shadow: 0 0 0 3px rgba(0, 230, 118, 0); opacity: 1; } 100% { box-shadow: 0 0 0 0 rgba(0, 230, 118, 0); opacity: 0.8; } }
         
         .time-line { max-height: 0; opacity: 0; overflow: hidden; margin-top: 0; transition: all 0.4s ease-out; }
-        body.show-hours .time-line { max-height: 20px; opacity: 1; margin-top: 6px; }
-        .badge-time { display: inline-block; padding: 3px 8px; border-radius: 6px; font-size: 0.6rem; font-weight: 700; background-color: var(--bg-time); color: var(--text-time); border: none; }
+        body.show-hours .time-line { max-height: 48px; opacity: 1; margin-top: 6px; }
+        .badge-time { display: inline-block; max-width: 100%; padding: 3px 8px; border-radius: 6px; font-size: 0.6rem; line-height: 1.25; text-align: center; white-space: normal; overflow-wrap: anywhere; font-weight: 700; background-color: var(--bg-time); color: var(--text-time); border: none; }
         body.dark-theme .badge-time { background-color: rgba(255, 138, 128, 0.1); color: #ff8a80; }
 
         /* LÓGICA DE OCULTAR ELEMENTOS NO MODO CALENDÁRIO */
@@ -733,7 +734,7 @@ function getScheduleLabel(item) {
     if (dateCount <= 1) return item.dates;
     if (item.g !== "Todos") return "Rodízio";
     if (isQuinzenalPorDatas(item.dates)) return "Quinzenal";
-    return "Datas definidas";
+    return "Semanal";
 }
 
 function renderCalendar() {
@@ -995,8 +996,10 @@ function updateView(shouldShowPopup = false) {
                     else if (m.act.includes("HP-8")) displayTitle = abrev(m.p);
 
                     const locsArr = m.l.split('/');
-                    const pills = locsArr.filter(l => l.trim().toUpperCase() !== 'UEPA').map(loc => `<span class="pill ${getPillClass(loc)}">${loc.trim()}</span>`).join('');
-                    const hourBadge = m.h ? `<div class="time-line"><span class="badge-time">${m.h}</span></div>` : "";
+                    const hiddenLocations = new Set(['UEPA', 'SALAS C1 E C2', 'ACOLHIMENTO', 'CONF. 2']);
+                    const pills = locsArr.filter(l => !hiddenLocations.has(l.trim().toUpperCase())).map(loc => `<span class="pill ${getPillClass(loc)}">${loc.trim()}</span>`).join('');
+                    const displayHour = m.h ? m.h.replace(/\s*\/\s*/g, '<br>') : '';
+                    const hourBadge = displayHour ? `<div class="time-line"><span class="badge-time">${displayHour}</span></div>` : "";
                     
                     let dateDisplay = "";
                     if (filteredDates === "Semanal" || filteredDates === "Quinzenal" || filteredDates === "Rodízio" || filteredDates === "Datas definidas") { 
@@ -1037,6 +1040,7 @@ function setFilter(val, skipUpdate = false) {
         }
     });
     activeFilter = val;
+    document.body.classList.toggle('semester-mode', val === 'all');
     if(!skipUpdate) updateView(false); 
 }
 
