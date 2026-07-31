@@ -127,10 +127,11 @@
         .command-bar { background-color: var(--header-bg-blue); padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; }
         .app-title { color: white; font-weight: 800; font-size: 1.05rem; letter-spacing: 1px; text-transform: uppercase; }
         
-        .action-icons { display: flex; gap: 10px; }
+        .action-icons { display: flex; gap: 8px; align-items: center; }
         
         /* BOTÕES SUPERIORES REDONDOS E ELEGANTES */
-        .btn-icon { background: rgba(255,255,255,0.08); border: none; color: white; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); flex-shrink: 0; backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); }
+        .btn-icon { background: rgba(255,255,255,0.08); border: none; color: white; min-width: 44px; height: 44px; padding: 0 12px; gap: 6px; border-radius: 24px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1rem; transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); flex-shrink: 0; backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); }
+        .btn-label { font-size: 0.65rem; font-weight: 700; }
         .btn-icon:hover { background: rgba(255,255,255,0.2); transform: translateY(-3px) scale(1.05); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
         .btn-icon:active { transform: scale(0.92); }
         .btn-icon.active { background: #ffffff; color: var(--header-bg-blue); box-shadow: 0 4px 15px rgba(0,0,0,0.25); transform: scale(1.05); }
@@ -162,6 +163,17 @@
         body.dark-theme .filter-btn.special { background: #3e2723; color: #ffb300; }
         body.dark-theme .filter-btn.special:hover { background: #4e342e; }
         body.dark-theme .context-panel .filter-btn.special.active { background: #ff8f00; color: #fff; box-shadow: 0 4px 12px rgba(255, 143, 0, 0.3); }
+
+        .view-switcher { display: inline-flex; align-self: flex-start; gap: 4px; padding: 4px; margin-top: 10px; border-radius: 14px; background: #eef2f6; }
+        body.dark-theme .view-switcher { background: #262c36; }
+        .view-btn { min-height: 38px; padding: 0 14px; border: none; border-radius: 10px; background: transparent; color: var(--text-meta); font: 700 0.7rem 'Inter', sans-serif; cursor: pointer; }
+        .view-btn.active { background: var(--card-bg); color: var(--primary-blue); box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+
+        .sync-status { display: inline-flex; align-items: center; gap: 5px; min-height: 28px; padding: 5px 9px; border-radius: 14px; color: rgba(255,255,255,0.9); background: rgba(255,255,255,0.1); font-size: 0.6rem; font-weight: 700; white-space: nowrap; }
+        .sync-status::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: #fbbf24; }
+        .sync-status.online::before { background: #34d399; }
+        .sync-status.offline::before { background: #fb7185; }
+        .sync-status.loading::before { background: #60a5fa; animation: pulse 1.2s infinite; }
 
         /* SELECT CUSTOMIZADO */
         select { outline: none; appearance: none; -webkit-appearance: none; padding: 8px 32px 8px 16px; border: none; border-radius: 24px; cursor: pointer; background-color: #f0f4f8; font-weight: 700; font-size: 0.75rem; color: #1e293b; box-shadow: 0 2px 4px rgba(0,0,0,0.02); background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23475569' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 12px center; background-size: 14px; font-family: 'Inter', sans-serif; }
@@ -244,6 +256,9 @@
         .subject-block:hover { transform: translateY(-2px); box-shadow: 0 6px 12px rgba(0,0,0,0.08); z-index: 5; }
         .subject-block:active { transform: scale(0.98); }
         .subject-block::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 6px; background: var(--bar-color); border-radius: 12px 0 0 12px; }
+        .subject-block.holiday { background: linear-gradient(135deg, #fff8e1, #ffecb3) !important; --bar-color: #f59e0b; }
+        body.dark-theme .subject-block.holiday { background: linear-gradient(135deg, #3b2b12, #2b1f0c) !important; }
+        .holiday-badge { display: inline-flex; align-items: center; padding: 2px 6px; border-radius: 8px; background: #b45309; color: #fff; font-size: 0.5rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.4px; }
 
         .giesc { background: var(--bg-giesc) !important; --bar-color: var(--bar-giesc); }
         .hp8 { background: var(--bg-hp8) !important; --bar-color: var(--bar-hp8); }
@@ -274,6 +289,38 @@
         body.show-hours .time-line { max-height: 48px; opacity: 1; margin-top: 6px; }
         .badge-time { display: inline-block; max-width: 100%; padding: 3px 8px; border-radius: 6px; font-size: 0.6rem; line-height: 1.25; text-align: center; white-space: normal; overflow-wrap: anywhere; font-weight: 700; background-color: var(--bg-time); color: var(--text-time); border: none; }
         body.dark-theme .badge-time { background-color: rgba(255, 138, 128, 0.1); color: #ff8a80; }
+
+        .next-class-summary { width: 100%; max-width: 1250px; margin: 0 0 10px; padding: 0; border: 1px solid var(--border-color); border-left: 5px solid var(--summary-accent, var(--bar-hp8)); border-radius: 14px; background: var(--card-bg); box-shadow: 0 5px 18px rgba(0,0,0,0.06); overflow: hidden; }
+        .next-summary-button { width: 100%; min-height: 74px; padding: 12px 16px; border: 0; background: transparent; color: inherit; display: grid; grid-template-columns: auto minmax(0,1fr) auto; align-items: center; gap: 14px; text-align: left; cursor: pointer; }
+        .next-summary-label { font-size: 0.58rem; font-weight: 800; text-transform: uppercase; color: var(--primary-blue); letter-spacing: 0.8px; }
+        .next-summary-main { min-width: 0; }
+        .next-summary-title { display: block; color: var(--text-title); font-size: 0.95rem; font-weight: 800; margin-top: 3px; }
+        .next-summary-meta { display: block; color: var(--text-meta); font-size: 0.7rem; margin-top: 3px; white-space: normal; }
+        .next-summary-arrow { color: var(--primary-blue); font-size: 1.25rem; }
+
+        .agenda-container { display: none; width: 100%; max-width: 820px; }
+        .agenda-empty { padding: 44px 18px; border: 1px dashed var(--border-color); border-radius: 16px; background: var(--card-bg); color: var(--text-meta); text-align: center; font-weight: 700; }
+        .agenda-day { margin-bottom: 18px; }
+        .agenda-day-heading { position: sticky; top: 66px; z-index: 20; display: flex; align-items: baseline; justify-content: space-between; padding: 9px 12px; border-radius: 10px; background: var(--header-bg-blue); color: #fff; box-shadow: 0 3px 10px rgba(0,0,0,0.12); }
+        .agenda-day-heading strong { font-size: 0.82rem; text-transform: uppercase; }
+        .agenda-day-heading span { font-size: 0.68rem; opacity: 0.85; }
+        .agenda-list { display: grid; gap: 8px; margin-top: 8px; }
+        .agenda-card { width: 100%; min-height: 78px; padding: 12px 14px; border: 1px solid var(--border-color); border-left: 6px solid var(--agenda-color); border-radius: 13px; background: var(--card-bg); color: inherit; display: grid; grid-template-columns: 72px minmax(0,1fr) auto; gap: 12px; align-items: center; text-align: left; cursor: pointer; box-shadow: 0 3px 12px rgba(0,0,0,0.05); }
+        .agenda-card.holiday { background: linear-gradient(135deg, #fff8e1, #ffecb3); --agenda-color: #f59e0b !important; }
+        body.dark-theme .agenda-card.holiday { background: linear-gradient(135deg, #3b2b12, #2b1f0c); }
+        .agenda-time { color: var(--primary-blue); font-size: 0.72rem; font-weight: 800; line-height: 1.35; }
+        .agenda-content { min-width: 0; }
+        .agenda-title { display: block; color: var(--text-title); font-size: 0.9rem; font-weight: 800; }
+        .agenda-prof { display: block; color: var(--text-meta); font-size: 0.68rem; margin-top: 3px; }
+        .agenda-location { color: var(--text-meta); font-size: 0.62rem; font-weight: 700; text-transform: uppercase; text-align: right; }
+
+        .mobile-quickbar { position: sticky; top: 5px; z-index: 80; width: 100%; max-width: 1250px; display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 0 0 8px; padding: 8px 10px; border: 1px solid var(--border-color); border-radius: 12px; background: color-mix(in srgb, var(--card-bg) 94%, transparent); backdrop-filter: blur(12px); box-shadow: 0 4px 14px rgba(0,0,0,0.08); }
+        .mobile-quickbar span { color: var(--text-title); font-size: 0.68rem; font-weight: 800; }
+        .mobile-quickbar button { min-width: 42px; min-height: 42px; padding: 0 12px; border: 0; border-radius: 10px; background: var(--bg-header-btn); color: var(--text-title); font-weight: 800; cursor: pointer; }
+
+        body.agenda-mode #btnHourToggle, body.agenda-mode #btnPanToggle { display: none; }
+
+        button:focus-visible, select:focus-visible, [role="button"]:focus-visible { outline: 3px solid #38bdf8; outline-offset: 2px; }
 
         /* LÓGICA DE OCULTAR ELEMENTOS NO MODO CALENDÁRIO */
         body.calendar-mode #btnDateToggle,
@@ -361,11 +408,33 @@
         
         body.panoramic-mode #sliderDrawer { display: none !important; }
 
-        @media (max-width: 600px) {
-            .app-title { font-size: 0.9rem; }
-            .btn-icon { width: 36px; height: 36px; font-size: 0.95rem; }
-            .command-bar { padding: 10px 12px; }
-            .context-panel { padding: 12px; }
+        @media (max-width: 700px) {
+            body { padding: 0 8px 84px; }
+            .header-wrapper { margin-top: 6px; }
+            .command-bar { padding: 10px; flex-direction: column; align-items: stretch; gap: 8px; }
+            .app-title { font-size: 0.82rem; letter-spacing: 0.5px; text-align: center; white-space: nowrap; }
+            .action-icons { width: 100%; gap: 4px; justify-content: space-between; }
+            .btn-icon { min-width: 44px; width: 44px; height: 44px; padding: 0; font-size: 1rem; }
+            .btn-label, .sync-status span { display: none; }
+            .sync-status { width: 28px; min-width: 28px; height: 28px; padding: 0; justify-content: center; }
+            .context-panel { padding: 10px; }
+            .filter-btn, select, .today-display { min-height: 44px; }
+            .members-list { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+            .view-switcher { width: 100%; }
+            .view-btn { flex: 1; min-height: 44px; padding: 0 8px; }
+            .schedule-container { border-radius: 12px; }
+            .next-class-summary { margin-bottom: 8px; }
+            .next-summary-button { grid-template-columns: minmax(0,1fr) auto; min-height: 76px; }
+            .next-summary-label { grid-column: 1 / -1; }
+            .next-summary-meta { line-height: 1.4; }
+            .agenda-container { max-width: none; }
+            .agenda-card { min-height: 88px; grid-template-columns: 62px minmax(0,1fr); }
+            .agenda-location { grid-column: 2; text-align: left; }
+            .agenda-day-heading { top: 66px; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
         }
 
         .signature { margin-top: 30px; font-size: 0.65rem; color: var(--text-meta); opacity: 0; cursor: default; transition: opacity 0.6s ease, transform 0.6s ease; user-select: none; }
@@ -378,11 +447,12 @@
     <div class="command-bar">
         <div class="app-title" id="appTitle">MED8 | GRUPO C | 2026.2</div>
         <div class="action-icons">
-            <button class="btn-icon" id="btnHourToggle" title="Horas" onclick="toggleHours()">⏰</button>
-            <button class="btn-icon" id="btnPanToggle" title="Visão Panorâmica" onclick="togglePanoramic()">🔍</button>
-            <button class="btn-icon" id="btnViewToggle" title="Ver Calendário" onclick="toggleViewMode()">🗓️</button>
-            <button class="btn-icon active" id="btnThemeToggle" title="Tema" onclick="toggleDarkMode()">🌓</button>
-            <button class="btn-icon" title="Print" onclick="generateImage()">🖼️</button>
+            <span id="syncStatus" class="sync-status loading" title="Estado da sincronização"><span>Conectando</span></span>
+            <button class="btn-icon" id="btnSync" aria-label="Atualizar dados" title="Atualizar dados" onclick="sincronizarDados(true)">🔄<span class="btn-label">Atualizar</span></button>
+            <button class="btn-icon" id="btnHourToggle" aria-label="Mostrar ou ocultar horários" title="Mostrar horários" onclick="toggleHours()">⏰<span class="btn-label">Horários</span></button>
+            <button class="btn-icon" id="btnPanToggle" aria-label="Ativar visão compacta" title="Visão compacta" onclick="togglePanoramic()">🔍<span class="btn-label">Compactar</span></button>
+            <button class="btn-icon active" id="btnThemeToggle" aria-label="Alternar tema" title="Alternar tema" onclick="toggleDarkMode()">🌓<span class="btn-label">Tema</span></button>
+            <button class="btn-icon" aria-label="Exportar imagem" title="Exportar imagem" onclick="generateImage()">🖼️<span class="btn-label">Exportar</span></button>
         </div>
     </div>
 
@@ -404,6 +474,12 @@
         
         <div id="membersDisplay" class="members-list"></div>
 
+        <div class="view-switcher" aria-label="Escolher visualização">
+            <button class="view-btn" data-view="matrix" onclick="setViewMode('matrix')">▦ Grade</button>
+            <button class="view-btn" data-view="agenda" onclick="setViewMode('agenda')">☷ Agenda</button>
+            <button class="view-btn" data-view="calendar" onclick="setViewMode('calendar')">▣ Calendário</button>
+        </div>
+
         <div id="sliderDrawer" class="slider-drawer">
             <div class="slider-group">
                 <div class="slider-item">Seg <input type="range" min="40" max="400" value="115" oninput="document.documentElement.style.setProperty('--w-seg', this.value+'px')"></div>
@@ -415,6 +491,22 @@
             </div>
         </div>
     </div>
+</div>
+
+<section id="nextClassSummary" class="next-class-summary" aria-live="polite">
+    <button id="nextSummaryButton" class="next-summary-button" type="button" onclick="openNextSummary()" disabled>
+        <span class="next-summary-label">Próxima aula</span>
+        <span class="next-summary-main">
+            <span id="nextSummaryTitle" class="next-summary-title">Carregando cronograma…</span>
+            <span id="nextSummaryMeta" class="next-summary-meta">Aguarde a sincronização</span>
+        </span>
+        <span class="next-summary-arrow" aria-hidden="true">›</span>
+    </button>
+</section>
+
+<div class="mobile-quickbar" aria-label="Navegação rápida">
+    <span id="mobileQuickLabel">Grupo C · Semana atual</span>
+    <button type="button" aria-label="Ir para os filtros" onclick="document.querySelector('.header-wrapper').scrollIntoView({behavior:'smooth'})">Filtros</button>
 </div>
 
 <div id="capture-area" class="schedule-container">
@@ -435,6 +527,7 @@
 </div>
 
 <div id="calendar-area" class="calendar-container"></div>
+<div id="agenda-area" class="agenda-container"></div>
 
 <div id="nextClassPopup" class="next-class-popup">
     <div class="popup-content">
@@ -469,15 +562,19 @@
 const ANO_LETIVO = 2026;
 const SEMESTRE = "2026.2";
 const START_DATE = new Date(2026, 7, 3);
+const END_DATE = new Date(2026, 11, 19, 23, 59, 59);
 const CACHE_KEY = "med8_csv_cache_2026_2";
+const CACHE_TIME_KEY = "med8_csv_cache_time_2026_2";
 const GROUP_STORAGE_KEY = "medGroup_2026_2_v2";
+const VIEW_MODE_KEY = "viewMode_uiux_v1";
 const DATA_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTsB-awD1AynH11CjHG4vkJoIlmQa_ZMh8zt8w-A_I41TCLs_5YLfpqb1U2donQLewneaatlGcg81E0/pub?gid=512229890&single=true&output=csv";
 
 let showHours = false;
 let popupTimeout; 
-let viewMode = localStorage.getItem('viewMode') || 'matrix';
+let viewMode = localStorage.getItem(VIEW_MODE_KEY) || (window.matchMedia('(max-width: 700px)').matches ? 'agenda' : 'matrix');
 let activeFilter = 'currWeek';
 let DATA_LEGO = [];
+let nextSummaryItem = null;
 
 const GROUP_MEMBERS = {
     A: ["Eduarda Silva Oliveira", "Henrique Costa Dos Santos", "Ricardo Otto Da Silva Jesus", "Rayan Moura Patrik Naim", "Matheus Sousa Aguiar"],
@@ -574,21 +671,35 @@ function processarDados(csvText) {
     }
 }
 
-async function sincronizarDados() {
+function setSyncStatus(state, text) {
+    const status = document.getElementById('syncStatus');
+    if (!status) return;
+    status.className = `sync-status ${state}`;
+    status.title = text;
+    const label = status.querySelector('span');
+    if (label) label.textContent = text;
+}
+
+async function sincronizarDados(manual = false) {
     const localData = localStorage.getItem(CACHE_KEY);
     const appTitle = document.getElementById('appTitle');
 
     if (localData) {
         processarDados(localData);
         console.log("⚡ Dados carregados do cache local.");
+        const savedAt = localStorage.getItem(CACHE_TIME_KEY);
+        setSyncStatus('offline', savedAt ? `Dados salvos · ${savedAt}` : 'Dados salvos');
     } else {
         appTitle.innerText = "⏳ BAIXANDO...";
         document.getElementById('capture-area').style.opacity = '0.5';
     }
 
+    setSyncStatus('loading', manual ? 'Atualizando…' : 'Sincronizando…');
+
     try {
         const separator = DATA_URL.includes('?') ? '&' : '?';
         const response = await fetch(DATA_URL + separator + "nocache=" + new Date().getTime());
+        if (!response.ok) throw new Error(`Falha HTTP ${response.status}`);
         const netData = await response.text();
         
         if (netData !== localData) {
@@ -601,10 +712,15 @@ async function sincronizarDados() {
         } else {
             console.log("✅ Cache já estava atualizado.");
         }
+        const updatedAt = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+        localStorage.setItem(CACHE_TIME_KEY, updatedAt);
+        setSyncStatus('online', `Atualizado às ${updatedAt}`);
         document.getElementById('capture-area').style.opacity = '1';
 
     } catch (error) {
         console.log("⚠️ Modo Offline ou Erro de Rede. Mantendo dados locais.");
+        const savedAt = localStorage.getItem(CACHE_TIME_KEY);
+        setSyncStatus('offline', localData ? `Offline · dados de ${savedAt || 'antes'}` : 'Sem conexão');
         if (!localData) {
             appTitle.innerText = "❌ SEM CONEXÃO";
             alert("Você está offline e não há dados salvos.");
@@ -629,26 +745,27 @@ function togglePanoramic() {
     localStorage.setItem('panoramicMode', isPan ? 'true' : 'false');
 }
 
-function toggleViewMode() {
-    viewMode = viewMode === 'matrix' ? 'calendar' : 'matrix';
-    localStorage.setItem('viewMode', viewMode);
-    const btn = document.getElementById('btnViewToggle');
-    
-    if(viewMode === 'calendar') {
-        btn.classList.add('active'); 
-        btn.title = 'Ver Matriz'; 
-        document.body.classList.add('calendar-mode');
-        
-        if (!activeFilter.includes('/')) {
-            const mm = String(new Date().getMonth() + 1).padStart(2, '0');
-            setFilter('/' + mm, true); 
-        }
-    } else {
-        btn.classList.remove('active'); 
-        btn.title = 'Ver Calendário'; 
-        document.body.classList.remove('calendar-mode');
+function updateViewSwitcher() {
+    document.querySelectorAll('.view-btn').forEach(btn => {
+        const selected = btn.dataset.view === viewMode;
+        btn.classList.toggle('active', selected);
+        btn.setAttribute('aria-pressed', selected ? 'true' : 'false');
+    });
+    document.body.classList.toggle('calendar-mode', viewMode === 'calendar');
+    document.body.classList.toggle('agenda-mode', viewMode === 'agenda');
+}
+
+function setViewMode(mode) {
+    viewMode = mode;
+    localStorage.setItem(VIEW_MODE_KEY, viewMode);
+    updateViewSwitcher();
+
+    if (viewMode === 'calendar' && !activeFilter.includes('/')) {
+        const mm = String(new Date().getMonth() + 1).padStart(2, '0');
+        setFilter('/' + mm, true);
     }
-    updateView(true); 
+
+    updateView(true);
 }
 
 function abrev(name) {
@@ -683,7 +800,7 @@ function getLocColorVar(l) {
 }
 
 function generateImage() {
-    const targetId = viewMode === 'calendar' ? "calendar-area" : "capture-area";
+    const targetId = viewMode === 'calendar' ? "calendar-area" : viewMode === 'agenda' ? "agenda-area" : "capture-area";
     const element = document.getElementById(targetId);
     document.body.classList.add('capturing');
     var bgCor = getComputedStyle(document.body).getPropertyValue('--card-bg').trim();
@@ -825,7 +942,8 @@ function renderCalendar() {
                 else if (actL.includes("tutorial")) displayTitle = "Tutorial";
                 
                 const dateStrParam = `${String(day).padStart(2,'0')}/${String(targetMonth + 1).padStart(2,'0')}`;
-                const cardHtml = `<div class="micro-card" style="--micro-color: ${colorVar}" onclick="showCalPopup('${item.id}', '${dateStrParam}')">${displayTitle}</div>`;
+                const isHoliday = actL.includes('feriado');
+                const cardHtml = `<div class="micro-card${isHoliday ? ' holiday' : ''}" role="button" tabindex="0" style="--micro-color: ${isHoliday ? '#f59e0b' : colorVar}" onclick="showCalPopup('${item.id}', '${dateStrParam}')">${isHoliday ? '⚠️ ' : ''}${displayTitle}</div>`;
                 
                 if (item.t === "Manhã") cardsM += cardHtml;
                 else if (item.t === "Tarde") cardsT += cardHtml;
@@ -916,29 +1034,151 @@ function showCalPopup(eventId, dateDisplay) {
     popupTimeout = setTimeout(() => { popup.classList.remove('visible'); }, 8000);
 }
 
+function parseScheduleDate(value) {
+    const [dd, mm] = value.trim().split('/').map(Number);
+    const date = new Date(ANO_LETIVO, mm - 1, dd);
+    return Number.isNaN(date.getTime()) ? null : date;
+}
+
+function getWeekBounds(offset = 0) {
+    const base = new Date();
+    const day = base.getDay() || 7;
+    const start = new Date(base.getFullYear(), base.getMonth(), base.getDate() - day + 1 + (offset * 7));
+    const end = new Date(start);
+    end.setDate(start.getDate() + 6);
+    end.setHours(23, 59, 59, 999);
+    return { start, end };
+}
+
+function getItemOccurrences(item) {
+    if (item.dates !== 'Semanal') {
+        return item.dates.split(',').map(parseScheduleDate).filter(Boolean);
+    }
+
+    const dayIndex = {"Segunda":1, "Terça":2, "Quarta":3, "Quinta":4, "Sexta":5, "Sábado":6}[item.d];
+    const dates = [];
+    const cursor = new Date(START_DATE);
+    while (cursor.getDay() !== dayIndex) cursor.setDate(cursor.getDate() + 1);
+    while (cursor <= END_DATE) {
+        dates.push(new Date(cursor));
+        cursor.setDate(cursor.getDate() + 7);
+    }
+    return dates;
+}
+
+function agendaDateMatches(date) {
+    if (activeFilter === 'all') return true;
+    if (activeFilter.includes('/')) return String(date.getMonth() + 1).padStart(2, '0') === activeFilter.slice(1);
+    if (activeFilter === 'currWeek' || activeFilter === 'nextWeek') {
+        const { start, end } = getWeekBounds(activeFilter === 'nextWeek' ? 1 : 0);
+        return date >= start && date <= end;
+    }
+    return true;
+}
+
+function getVisibleLocation(location) {
+    const hiddenLocations = new Set(['UEPA', 'SALAS C1 E C2', 'ACOLHIMENTO', 'CONF. 2']);
+    return location.split('/').map(part => part.trim()).filter(part => !hiddenLocations.has(part.toUpperCase())).join(' · ');
+}
+
+function renderAgenda() {
+    const group = document.getElementById('groupSelect').value;
+    const agenda = document.getElementById('agenda-area');
+    const now = new Date();
+    const entries = [];
+
+    DATA_LEGO.forEach(item => {
+        if (item.g !== 'Todos' && !item.g.includes(group)) return;
+        let dates = getItemOccurrences(item).sort((a, b) => a - b);
+        if (activeFilter === 'padrao') {
+            const next = dates.find(date => date >= now) || dates[dates.length - 1];
+            dates = next ? [next] : [];
+        } else {
+            dates = dates.filter(agendaDateMatches);
+        }
+
+        const hour = item.h ? parseInt(item.h.split(':')[0], 10) : ({'Manhã':8, 'Tarde':14, 'Noite':18}[item.t] || 0);
+        dates.forEach(date => entries.push({ item, date, hour }));
+    });
+
+    entries.sort((a, b) => a.date - b.date || a.hour - b.hour);
+    if (!entries.length) {
+        agenda.innerHTML = `<div class="agenda-empty">Nenhuma aula programada para este período.</div>`;
+        return;
+    }
+
+    const grouped = new Map();
+    entries.forEach(entry => {
+        const key = entry.date.toISOString().slice(0, 10);
+        if (!grouped.has(key)) grouped.set(key, []);
+        grouped.get(key).push(entry);
+    });
+
+    let html = '';
+    grouped.forEach(dayEntries => {
+        const date = dayEntries[0].date;
+        const heading = date.toLocaleDateString('pt-BR', { weekday: 'long' });
+        const dateLabel = date.toLocaleDateString('pt-BR', { day: '2-digit', month: 'long' });
+        html += `<section class="agenda-day"><div class="agenda-day-heading"><strong>${heading}</strong><span>${dateLabel}</span></div><div class="agenda-list">`;
+
+        dayEntries.forEach(({ item }) => {
+            const actL = item.act.toLowerCase();
+            const holiday = actL.includes('feriado');
+            let color = 'var(--bar-hp8)';
+            if (actL.includes('tutorial')) color = 'var(--bar-tutorial)';
+            else if (actL.includes('morfo')) color = 'var(--bar-morfo)';
+            else if (actL.includes('giesc')) color = 'var(--bar-giesc)';
+            const activity = actL.includes('tutorial') ? 'Tutorial' : actL.includes('morfo') ? 'Morfo' : item.act.replace(' (FERIADO)', '');
+            const time = item.h ? item.h.replace(/\s*\/\s*/g, '<br>') : item.t;
+            const location = getVisibleLocation(item.l);
+            const dateParam = date.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
+            html += `<button class="agenda-card${holiday ? ' holiday' : ''}" style="--agenda-color:${color}" onclick="showCalPopup('${item.id}', '${dateParam}')">
+                <span class="agenda-time">${time}</span>
+                <span class="agenda-content"><span class="agenda-title">${holiday ? '⚠️ ' : ''}${activity}</span><span class="agenda-prof">${abrev(item.p)} · ${getScheduleLabel(item)}</span></span>
+                <span class="agenda-location">${location}</span>
+            </button>`;
+        });
+
+        html += `</div></section>`;
+    });
+    agenda.innerHTML = html;
+}
+
 function updateView(shouldShowPopup = false) {
     const group = document.getElementById('groupSelect').value;
     localStorage.setItem(GROUP_STORAGE_KEY, group);
     document.getElementById('appTitle').innerText = `MED8 | GRUPO ${group} | ${SEMESTRE}`;
     document.getElementById('cornerGroup').innerText = group;
+    updateViewSwitcher();
 
     const days = ["Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"];
     const turns = ["Manhã", "Tarde", "Noite"];
     const sorted = [...GROUP_MEMBERS[group]].sort();
     document.getElementById('membersDisplay').innerHTML = `📍 <b>Integrantes:</b> ${sorted.map(m => abrev(m)).join(', ')}`;
+    const filterNames = {currWeek:'Semana atual', nextWeek:'Próxima semana', padrao:'Padrão', all:'Semestre', '/08':'Agosto', '/09':'Setembro', '/10':'Outubro', '/11':'Novembro', '/12':'Dezembro'};
+    document.getElementById('mobileQuickLabel').textContent = `Grupo ${group} · ${filterNames[activeFilter] || 'Cronograma'}`;
 
     if (viewMode === 'calendar') {
         document.getElementById('capture-area').style.display = 'none';
+        document.getElementById('agenda-area').style.display = 'none';
         document.getElementById('calendar-area').style.display = 'block';
-        if(document.getElementById('btnViewToggle')) document.getElementById('btnViewToggle').classList.add('active');
         renderCalendar();
-        if(shouldShowPopup) updatePopup();
+        updatePopup();
+        return; 
+    }
+
+    if (viewMode === 'agenda') {
+        document.getElementById('capture-area').style.display = 'none';
+        document.getElementById('calendar-area').style.display = 'none';
+        document.getElementById('agenda-area').style.display = 'block';
+        renderAgenda();
+        updatePopup();
         return; 
     }
 
     document.getElementById('calendar-area').style.display = 'none';
+    document.getElementById('agenda-area').style.display = 'none';
     document.getElementById('capture-area').style.display = 'inline-block';
-    if(document.getElementById('btnViewToggle')) document.getElementById('btnViewToggle').classList.remove('active');
 
     let todayIndex = new Date().getDay(); if (todayIndex === 0) todayIndex = 7;
     const isCurrentWeekMode = activeFilter === 'currWeek';
@@ -987,6 +1227,8 @@ function updateView(shouldShowPopup = false) {
                     else if(actL.includes("hp-8") || actL.includes("hp-8 (uro)")) colorClass = "hp8";
                     else if(actL.includes("tutorial")) colorClass = "tutorial";
                     else if(actL.includes("morfo")) colorClass = "morfo";
+                    const isHoliday = actL.includes('feriado');
+                    if (isHoliday) colorClass += " holiday";
 
                     let displayTitle = abrev(m.p);
 
@@ -998,6 +1240,7 @@ function updateView(shouldShowPopup = false) {
                     const locsArr = m.l.split('/');
                     const hiddenLocations = new Set(['UEPA', 'SALAS C1 E C2', 'ACOLHIMENTO', 'CONF. 2']);
                     const pills = locsArr.filter(l => !hiddenLocations.has(l.trim().toUpperCase())).map(loc => `<span class="pill ${getPillClass(loc)}">${loc.trim()}</span>`).join('');
+                    const holidayBadge = isHoliday ? `<span class="holiday-badge">Feriado</span>` : '';
                     const displayHour = m.h ? m.h.replace(/\s*\/\s*/g, '<br>') : '';
                     const hourBadge = displayHour ? `<div class="time-line"><span class="badge-time">${displayHour}</span></div>` : "";
                     
@@ -1008,8 +1251,8 @@ function updateView(shouldShowPopup = false) {
                         dateDisplay = filteredDates; 
                     }
 
-                    cellContent += `<div class="subject-block ${colorClass}" onclick="showCalPopup('${m.id}', '${filteredDates}')">
-                        <div class="card-header"><span class="card-title">${displayTitle}</span><div class="pill-wrapper">${pills}</div></div>
+                    cellContent += `<div class="subject-block ${colorClass}" role="button" tabindex="0" aria-label="Abrir detalhes de ${displayTitle}" onclick="showCalPopup('${m.id}', '${filteredDates}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showCalPopup('${m.id}', '${filteredDates}')}">
+                        <div class="card-header"><span class="card-title">${isHoliday ? '⚠️ ' : ''}${displayTitle}</span><div class="pill-wrapper">${holidayBadge}${pills}</div></div>
                         <div class="date-line">${dateDisplay}</div>${hourBadge}
                     </div>`;
                 }
@@ -1029,7 +1272,7 @@ function updateView(shouldShowPopup = false) {
         if(i > 0) th.classList.toggle('today-column', (isCurrentWeekMode && i === todayIndex));
     });
     
-    if(shouldShowPopup) updatePopup();
+    updatePopup();
 }
 
 function setFilter(val, skipUpdate = false) {
@@ -1047,99 +1290,61 @@ function setFilter(val, skipUpdate = false) {
 function changeGroup(val) { updateView(true); }
 
 function updatePopup() {
-    clearTimeout(popupTimeout);
-    const popup = document.getElementById('nextClassPopup');
-    popup.classList.remove('visible');
-    
-    setTimeout(() => {
-        const group = document.getElementById('groupSelect').value;
-        const now = new Date();
-        const effectiveNow = now < START_DATE ? new Date(START_DATE) : now;
-        const daysMap = {"Segunda":1, "Terça":2, "Quarta":3, "Quinta":4, "Sexta":5, "Sábado":6};
-        const timeMap = {"Manhã": 8, "Tarde": 14, "Noite": 18};
+    const group = document.getElementById('groupSelect').value;
+    const now = new Date();
+    const effectiveNow = now < START_DATE ? new Date(START_DATE) : now;
+    let nextClass = null;
+    let minDiff = Infinity;
 
-        let nextClass = null;
-        let minDiff = Infinity;
-
-        DATA_LEGO.forEach(item => {
-            if (item.g !== "Todos" && !item.g.includes(group)) return;
-            const dayIdx = daysMap[item.d];
-            const hour = item.h ? parseInt(item.h.split(':')[0]) : timeMap[item.t];
-            
-            let classDate = new Date(effectiveNow); 
-            classDate.setHours(hour, 0, 0, 0);
-
-            let currentDayIdx = effectiveNow.getDay();
-            let diffDays = dayIdx - currentDayIdx;
-            
-            if (diffDays < 0 || (diffDays === 0 && effectiveNow.getHours() >= hour)) { diffDays += 7; }
-            classDate.setDate(effectiveNow.getDate() + diffDays);
-
-            if (item.dates !== "Semanal") {
-                const possibleDates = item.dates.split(',').map(d => {
-                    const [dd, mm] = d.trim().split('/');
-                    return new Date(ANO_LETIVO, parseInt(mm)-1, parseInt(dd), hour, 0);
-                });
-                const validDate = possibleDates.find(d => d > effectiveNow);
-                if (!validDate) return; 
-                classDate = validDate;
-            } 
-            
-            if (classDate < START_DATE) {
-                if (item.dates === "Semanal") {
-                    let startDayIdx = START_DATE.getDay();
-                    let diffFromStart = dayIdx - startDayIdx;
-                    if (diffFromStart < 0) diffFromStart += 7;
-                    classDate = new Date(START_DATE);
-                    classDate.setDate(START_DATE.getDate() + diffFromStart);
-                    classDate.setHours(hour, 0, 0, 0);
-                }
-            }
-
-            const diff = classDate - now; 
-            if (diff > 0 && diff < minDiff) { minDiff = diff; nextClass = { ...item, realDate: classDate }; }
+    DATA_LEGO.forEach(item => {
+        if (item.g !== 'Todos' && !item.g.includes(group)) return;
+        const hour = item.h ? parseInt(item.h.split(':')[0], 10) : ({'Manhã':8, 'Tarde':14, 'Noite':18}[item.t] || 0);
+        const possibleDates = getItemOccurrences(item).map(date => {
+            const value = new Date(date);
+            value.setHours(hour, 0, 0, 0);
+            return value;
         });
-
-        if (nextClass) {
-            const todayMidnight = new Date(); todayMidnight.setHours(0,0,0,0);
-            const targetMidnight = new Date(nextClass.realDate); targetMidnight.setHours(0,0,0,0);
-            const diffTime = targetMidnight - todayMidnight;
-            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-            let relativeTag = ""; let badgeClass = "";
-            if (diffDays <= 0) { relativeTag = "HOJE"; badgeClass = "badge-today"; }
-            else if (diffDays === 1) { relativeTag = "AMANHÃ"; badgeClass = "badge-tomorrow"; }
-            else { relativeTag = `EM ${diffDays} DIAS`; badgeClass = "badge-soon"; }
-
-            const dayName = nextClass.realDate.toLocaleDateString('pt-BR', { weekday: 'long' });
-            const dateStr = nextClass.realDate.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
-            const timeStr = nextClass.h ? nextClass.h.split(' - ')[0] : nextClass.t; 
-
-            // Header Automático
-            const headerHtml = `<span class="popup-badge ${badgeClass}">${relativeTag}</span> <span class="popup-group">GRUPO ${group}</span>`;
-            document.getElementById('popup-badges').innerHTML = headerHtml;
-            
-            document.getElementById('popup-title').innerText = nextClass.act;
-            
-            const locName = nextClass.l.split('/')[0];
-            const locColor = getLocColorVar(locName); 
-            
-            const locEl = document.getElementById('popup-loc');
-            locEl.innerText = locName;
-            locEl.style.backgroundColor = locColor;
-            
-            popup.style.borderLeftColor = locColor;
-            document.getElementById('popupTimer').style.backgroundColor = locColor;
-            
-            document.getElementById('popup-time').innerHTML = `<b>${timeStr}</b> <span style="opacity:0.4; margin:0 6px">•</span> ${dayName.charAt(0).toUpperCase() + dayName.slice(1)} (${dateStr})`;
-            document.getElementById('popup-prof').innerHTML = `<b>${abrev(nextClass.p)}</b>`;
-
-            const timerBar = document.getElementById('popupTimer');
-            timerBar.style.animation = 'none'; timerBar.offsetHeight; timerBar.style.animation = 'countdown 10s linear forwards';
-            popup.classList.add('visible');
-            popupTimeout = setTimeout(() => { popup.classList.remove('visible'); }, 10000);
+        const classDate = possibleDates.find(date => date > effectiveNow);
+        if (!classDate) return;
+        const diff = classDate - now;
+        if (diff > 0 && diff < minDiff) {
+            minDiff = diff;
+            nextClass = { ...item, realDate: classDate };
         }
-    }, 100);
+    });
+
+    nextSummaryItem = nextClass;
+    const button = document.getElementById('nextSummaryButton');
+    const title = document.getElementById('nextSummaryTitle');
+    const meta = document.getElementById('nextSummaryMeta');
+    const panel = document.getElementById('nextClassSummary');
+
+    if (!nextClass) {
+        button.disabled = true;
+        title.textContent = 'Nenhuma próxima aula encontrada';
+        meta.textContent = 'Confira os filtros ou a planilha publicada.';
+        return;
+    }
+
+    const todayMidnight = new Date(); todayMidnight.setHours(0, 0, 0, 0);
+    const targetMidnight = new Date(nextClass.realDate); targetMidnight.setHours(0, 0, 0, 0);
+    const diffDays = Math.ceil((targetMidnight - todayMidnight) / 86400000);
+    const relativeTag = diffDays <= 0 ? 'Hoje' : diffDays === 1 ? 'Amanhã' : `Em ${diffDays} dias`;
+    const dateStr = nextClass.realDate.toLocaleDateString('pt-BR', { weekday:'short', day:'2-digit', month:'2-digit' });
+    const timeStr = nextClass.h ? nextClass.h.split(' - ')[0] : nextClass.t;
+    const location = getVisibleLocation(nextClass.l);
+    const locColor = getLocColorVar(nextClass.l.split('/')[0]);
+
+    panel.style.setProperty('--summary-accent', locColor);
+    button.disabled = false;
+    title.textContent = `${nextClass.act.replace(' (FERIADO)', '')} · ${abrev(nextClass.p)}`;
+    meta.textContent = `${relativeTag} · ${dateStr} · ${timeStr}${location ? ` · ${location}` : ''}`;
+}
+
+function openNextSummary() {
+    if (!nextSummaryItem) return;
+    const dateStr = nextSummaryItem.realDate.toLocaleDateString('pt-BR', { day:'2-digit', month:'2-digit' });
+    showCalPopup(nextSummaryItem.id, dateStr);
 }
 
 function closePopupManual() {
@@ -1170,13 +1375,13 @@ function closePopupManual() {
         document.getElementById('btnPanToggle').classList.add('active');
     }
 
+    updateViewSwitcher();
+
     if(viewMode === 'calendar') {
-        document.getElementById('btnViewToggle').classList.add('active'); 
-        document.body.classList.add('calendar-mode');
         const mm = String(new Date().getMonth() + 1).padStart(2, '0');
         setFilter('/' + mm, true);
     } else {
-        setFilter('currWeek', true);
+        setFilter(today < START_DATE ? 'nextWeek' : 'currWeek', true);
     }
     
     sincronizarDados(); 
