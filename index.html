@@ -187,6 +187,10 @@
         
         .members-list { font-size: 0.7rem; font-weight: 600; background: rgba(251, 191, 36, 0.15); border: none; color: #b45309; padding: 10px 16px; border-radius: 12px; margin-top: 10px; line-height: 1.5; }
         body.dark-theme .members-list { background: rgba(245, 158, 11, 0.1); color: #fcd34d; }
+        .member-hp-toggle { appearance: none; border: 0; padding: 1px 4px; margin: -1px -4px; border-radius: 6px; background: transparent; color: inherit; font: inherit; cursor: pointer; transition: background-color .2s ease, box-shadow .2s ease, opacity .2s ease; }
+        .member-hp-toggle:hover { background: rgba(255,255,255,.1); }
+        .member-hp-toggle.active { background: rgba(255,255,255,.16); box-shadow: inset 0 0 0 1px rgba(255,255,255,.24); }
+        .member-hp-toggle:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
 
         .slider-drawer { display: none; background: #f0f4f8; padding: 12px; border-radius: 12px; margin-top: 8px; border: none; }
         body.dark-theme .slider-drawer { background: #262c36; }
@@ -479,8 +483,13 @@
             .next-summary-meta { font-size: .62rem; margin-top: 2px; }
         }
 
-        .signature { margin-top: 30px; font-size: 0.65rem; color: var(--text-meta); opacity: 0; cursor: default; transition: opacity 0.6s ease, transform 0.6s ease; user-select: none; }
-        .signature:hover { opacity: 0.7; transform: translateY(-5px); }
+        .signature { appearance: none; border: 0; background: transparent; margin-top: 28px; padding: 7px 10px; display: inline-flex; align-items: center; justify-content: center; gap: 7px; cursor: pointer; user-select: none; }
+        .signature-symbol { font: 800 1rem/1 ui-monospace, SFMono-Regular, Consolas, monospace; letter-spacing: -.08em; background: linear-gradient(110deg, #0ea5e9, #8b5cf6, #14b8a6, #0ea5e9); background-size: 260% 260%; color: transparent; -webkit-background-clip: text; background-clip: text; filter: drop-shadow(0 0 5px rgba(14,165,233,.18)); animation: signatureFlow 5s ease-in-out infinite; transition: transform .3s ease, filter .3s ease; }
+        .signature-credit { max-width: 0; opacity: 0; overflow: hidden; white-space: nowrap; color: var(--text-meta); font-size: .66rem; font-weight: 650; transform: translateX(-4px); transition: max-width .45s ease, opacity .35s ease, transform .45s ease; }
+        .signature:hover .signature-symbol { transform: translateY(-2px) scale(1.06); filter: drop-shadow(0 0 8px rgba(139,92,246,.28)); }
+        .signature.revealed .signature-credit { max-width: 130px; opacity: .82; transform: translateX(0); }
+        @keyframes signatureFlow { 0%,100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+        @media (prefers-reduced-motion: reduce) { .signature-symbol { animation: none; } }
     </style>
 </head>
 <body>
@@ -615,7 +624,10 @@
     <div id="popupTimer" class="popup-timer"></div>
 </div>
 
-<div class="signature">Desenvolvido por Claudemir | MED8 2026</div>
+<button class="signature" id="signatureMark" type="button" aria-expanded="false" aria-label="Mostrar autoria" onclick="toggleSignature()">
+    <span class="signature-symbol" aria-hidden="true">&lt;⁄&gt;</span>
+    <span class="signature-credit">Desenvolvido por Clau</span>
+</button>
 
 <script>
 const ANO_LETIVO = 2026;
@@ -625,6 +637,8 @@ const END_DATE = new Date(2026, 11, 19, 23, 59, 59);
 const CACHE_KEY = "med8_csv_cache_2026_2";
 const CACHE_TIME_KEY = "med8_csv_cache_time_2026_2";
 const GROUP_STORAGE_KEY = "medGroup_2026_2_v2";
+const HP_MODE_STORAGE_KEY = "medHpModeByGroup_2026_2_v2";
+const LEGACY_HP_PERSON_STORAGE_KEY = "medHpPerson_2026_2_v1";
 const VIEW_MODE_KEY = "viewMode_uiux_v1";
 const DATA_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTsB-awD1AynH11CjHG4vkJoIlmQa_ZMh8zt8w-A_I41TCLs_5YLfpqb1U2donQLewneaatlGcg81E0/pub?gid=512229890&single=true&output=csv";
 
@@ -634,6 +648,7 @@ let viewMode = localStorage.getItem(VIEW_MODE_KEY) || (window.matchMedia('(max-w
 let activeFilter = 'currWeek';
 let DATA_LEGO = [];
 let nextSummaryItem = null;
+let hpModeByGroup = {};
 
 const GROUP_MEMBERS = {
     A: ["Eduarda Silva Oliveira", "Henrique Costa Dos Santos", "Ricardo Otto Da Silva Jesus", "Rayan Moura Patrik Naim", "Matheus Sousa Aguiar"],
@@ -641,6 +656,26 @@ const GROUP_MEMBERS = {
     C: ["Humberto Vinícius Maciel Guimarães", "Luis Arthur Pereira Junior", "Danilo Duarte Paz", "Beatriz De Oliveira Pereira", "Gabriel Fernandes Rabelo", "Claudemir Guimarães Pedroso Junior"],
     D: ["Thayssa Do Vale Torres", "Kallyl Jorge Ribeiro De Castro", "Isabela Marina Reca Ribeiro", "João Paulo Bentes De Sales", "Fernanda Sena De Trolly", "Juliane Narriman De Sousa Pinheiro"]
 };
+
+const HP_ONLY_PROFILES = {
+    claudemir: { id: 'claudemir', firstName: 'Claudemir', group: 'C' },
+    roberta: { id: 'roberta', firstName: 'Roberta', group: 'B' }
+};
+
+try {
+    const savedModes = JSON.parse(localStorage.getItem(HP_MODE_STORAGE_KEY) || '{}');
+    if (savedModes && typeof savedModes === 'object') hpModeByGroup = savedModes;
+} catch (_) {
+    hpModeByGroup = {};
+}
+
+const legacyHpPerson = localStorage.getItem(LEGACY_HP_PERSON_STORAGE_KEY) || '';
+if (legacyHpPerson.startsWith('Claudemir')) hpModeByGroup.C = 'claudemir';
+if (legacyHpPerson.startsWith('Roberta')) hpModeByGroup.B = 'roberta';
+if (legacyHpPerson) {
+    localStorage.setItem(HP_MODE_STORAGE_KEY, JSON.stringify(hpModeByGroup));
+    localStorage.removeItem(LEGACY_HP_PERSON_STORAGE_KEY);
+}
 
 function parseCSV(str) {
     const arr = [];
@@ -975,7 +1010,7 @@ function renderCalendar() {
         let cardsM = ''; let cardsT = ''; let cardsN = '';
         
         DATA_LEGO.forEach(item => {
-            if (item.g !== "Todos" && !item.g.includes(group)) return;
+            if (!matchesActiveProfile(item, group)) return;
             let hasEventToday = false;
             const eventDayOfWeek = daysMap[item.d];
 
@@ -1148,6 +1183,41 @@ function getVisibleLocation(location) {
     return location.split('/').map(part => part.trim()).filter(part => !hiddenLocations.has(part.toUpperCase())).join(' · ');
 }
 
+function matchesActiveProfile(item, group) {
+    const groupMatch = item.g === 'Todos' || item.g.includes(group);
+    const activityMatch = !hpModeByGroup[group] || /^HP-8\b/i.test(item.act.trim());
+    return groupMatch && activityMatch;
+}
+
+function renderMemberName(name) {
+    const label = abrev(name);
+    const profile = Object.values(HP_ONLY_PROFILES).find(item => name.startsWith(item.firstName));
+    if (!profile) return label;
+    const active = hpModeByGroup[profile.group] === profile.id;
+    const action = active ? 'Desativar' : 'Ativar';
+    return `<button type="button" class="member-hp-toggle${active ? ' active' : ''}" data-profile="${profile.id}" aria-pressed="${active}" aria-label="${action} modo HP de ${label}" onclick="toggleHpMode(this.dataset.profile)">${label}</button>`;
+}
+
+function toggleHpMode(profileId) {
+    const profile = HP_ONLY_PROFILES[profileId];
+    if (!profile) return;
+    if (hpModeByGroup[profile.group] === profile.id) {
+        delete hpModeByGroup[profile.group];
+    } else {
+        hpModeByGroup[profile.group] = profile.id;
+    }
+    localStorage.setItem(HP_MODE_STORAGE_KEY, JSON.stringify(hpModeByGroup));
+    document.getElementById('groupSelect').value = profile.group;
+    updateView(true);
+}
+
+function toggleSignature() {
+    const mark = document.getElementById('signatureMark');
+    const revealed = mark.classList.toggle('revealed');
+    mark.setAttribute('aria-expanded', revealed ? 'true' : 'false');
+    mark.setAttribute('aria-label', revealed ? 'Ocultar autoria' : 'Mostrar autoria');
+}
+
 function renderAgenda() {
     const group = document.getElementById('groupSelect').value;
     const agenda = document.getElementById('agenda-area');
@@ -1155,7 +1225,7 @@ function renderAgenda() {
     const entries = [];
 
     DATA_LEGO.forEach(item => {
-        if (item.g !== 'Todos' && !item.g.includes(group)) return;
+        if (!matchesActiveProfile(item, group)) return;
         let dates = getItemOccurrences(item).sort((a, b) => a - b);
         if (activeFilter === 'padrao') {
             const next = dates.find(date => date >= now) || dates[dates.length - 1];
@@ -1221,7 +1291,7 @@ function updateView(shouldShowPopup = false) {
     const days = ["Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"];
     const turns = ["Manhã", "Tarde", "Noite"];
     const sorted = [...GROUP_MEMBERS[group]].sort();
-    document.getElementById('membersDisplay').innerHTML = `📍 <b>Integrantes:</b> ${sorted.map(m => abrev(m)).join(', ')}`;
+    document.getElementById('membersDisplay').innerHTML = `📍 <b>Integrantes:</b> ${sorted.map(renderMemberName).join(', ')}`;
     const filterNames = {currWeek:'Semana atual', nextWeek:'Próxima semana', padrao:'Padrão', all:'Semestre', '/08':'Agosto', '/09':'Setembro', '/10':'Outubro', '/11':'Novembro', '/12':'Dezembro'};
     document.getElementById('mobileQuickLabel').textContent = `Grupo ${group} · ${filterNames[activeFilter] || 'Cronograma'}`;
 
@@ -1257,8 +1327,7 @@ function updateView(shouldShowPopup = false) {
         html += `<tr><td class="time-col">${turn[0]}</td>`;
         days.forEach((day, index) => {
             const matches = DATA_LEGO.filter(item => {
-                const groupMatch = item.g === "Todos" || item.g.includes(group);
-                return item.d === day && item.t === turn && groupMatch;
+                return item.d === day && item.t === turn && matchesActiveProfile(item, group);
             });
             const highlightClass = (isCurrentWeekMode && (index + 1) === todayIndex) ? 'today-column' : '';
             let cellContent = "";
@@ -1356,7 +1425,9 @@ function setFilter(val, skipUpdate = false) {
     if(!skipUpdate) updateView(false); 
 }
 
-function changeGroup(val) { updateView(true); }
+function changeGroup(val) {
+    updateView(true);
+}
 
 function updatePopup() {
     const group = document.getElementById('groupSelect').value;
@@ -1366,7 +1437,7 @@ function updatePopup() {
     let minDiff = Infinity;
 
     DATA_LEGO.forEach(item => {
-        if (item.g !== 'Todos' && !item.g.includes(group)) return;
+        if (!matchesActiveProfile(item, group)) return;
         const hour = item.h ? parseInt(item.h.split(':')[0], 10) : ({'Manhã':8, 'Tarde':14, 'Noite':18}[item.t] || 0);
         const possibleDates = getItemOccurrences(item).map(date => {
             const value = new Date(date);
