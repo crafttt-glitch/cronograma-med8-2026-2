@@ -437,6 +437,48 @@
             *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
         }
 
+        /* VARIANTE CLEAN: menos controles competindo pela atenção */
+        .command-bar { min-height: 58px; }
+        .top-actions { display: flex; align-items: center; gap: 8px; }
+        .menu-toggle { min-width: 44px; height: 40px; padding: 0 13px; border: 1px solid rgba(255,255,255,.18); border-radius: 12px; background: rgba(255,255,255,.1); color: #fff; font: 800 .7rem 'Inter', sans-serif; cursor: pointer; }
+        .menu-toggle[aria-expanded="true"] { background: #fff; color: var(--header-bg-blue); }
+        .options-panel { display: none; padding: 10px 14px; background: color-mix(in srgb, var(--header-bg-blue) 94%, #fff); border-top: 1px solid rgba(255,255,255,.12); }
+        .options-panel.open { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+        .options-panel .btn-icon { min-width: 42px; height: 40px; }
+        .options-panel .members-list,
+        body.dark-theme .options-panel .members-list { flex: 1 1 100%; margin-top: 2px; background: rgba(255,255,255,.1); color: rgba(255,255,255,.9); border: 1px solid rgba(255,255,255,.12); }
+        .context-panel { padding: 10px 14px; }
+        .compact-controls { display: grid; grid-template-columns: 150px 190px minmax(300px, 1fr); align-items: center; gap: 10px; }
+        .compact-controls select { width: 100%; min-height: 42px; }
+        .compact-controls .view-switcher { justify-self: end; margin: 0; }
+        .legacy-filters { display: none !important; }
+        .next-class-summary { box-shadow: none; border-radius: 12px; }
+        .next-summary-button { min-height: 58px; padding: 8px 14px; }
+        .next-summary-label { writing-mode: horizontal-tb; }
+        .mobile-quickbar { display: none; }
+        .agenda-day-heading { top: 5px; }
+
+        @media (max-width: 700px) {
+            body { padding-top: 0; }
+            .command-bar { min-height: 52px; padding: 8px 10px; flex-direction: row; align-items: center; gap: 8px; }
+            .app-title { text-align: left; font-size: .78rem; overflow: hidden; text-overflow: ellipsis; }
+            .sync-status { width: 28px; min-width: 28px; height: 28px; }
+            .menu-toggle { height: 40px; padding: 0 10px; font-size: 0; }
+            .menu-toggle::after { content: '•••'; font-size: 1rem; letter-spacing: 2px; }
+            .options-panel.open { display: grid; grid-template-columns: repeat(5, 1fr); padding: 9px 10px; }
+            .options-panel .btn-icon { width: 100%; min-width: 0; height: 44px; padding: 0; }
+            .options-panel .members-list { grid-column: 1 / -1; white-space: normal; }
+            .context-panel { padding: 8px 10px 10px; }
+            .compact-controls { grid-template-columns: 1fr 1.45fr; gap: 7px; }
+            .compact-controls .view-switcher { grid-column: 1 / -1; justify-self: stretch; }
+            .view-switcher { padding: 3px; }
+            .view-btn { min-height: 40px; }
+            .next-summary-button { min-height: 60px; padding: 8px 12px; grid-template-columns: auto minmax(0,1fr) auto; gap: 8px; }
+            .next-summary-label { grid-column: auto; font-size: .52rem; }
+            .next-summary-title { font-size: .82rem; }
+            .next-summary-meta { font-size: .62rem; margin-top: 2px; }
+        }
+
         .signature { margin-top: 30px; font-size: 0.65rem; color: var(--text-meta); opacity: 0; cursor: default; transition: opacity 0.6s ease, transform 0.6s ease; user-select: none; }
         .signature:hover { opacity: 0.7; transform: translateY(-5px); }
     </style>
@@ -446,20 +488,45 @@
 <div class="header-wrapper">
     <div class="command-bar">
         <div class="app-title" id="appTitle">MED8 | GRUPO C | 2026.2</div>
-        <div class="action-icons">
+        <div class="top-actions">
             <span id="syncStatus" class="sync-status loading" title="Estado da sincronização"><span>Conectando</span></span>
+            <button class="menu-toggle" id="menuToggle" type="button" aria-expanded="false" aria-controls="optionsPanel" onclick="toggleOptions()">Mais opções</button>
+        </div>
+    </div>
+
+    <div class="options-panel" id="optionsPanel">
             <button class="btn-icon" id="btnSync" aria-label="Atualizar dados" title="Atualizar dados" onclick="sincronizarDados(true)">🔄<span class="btn-label">Atualizar</span></button>
             <button class="btn-icon" id="btnHourToggle" aria-label="Mostrar ou ocultar horários" title="Mostrar horários" onclick="toggleHours()">⏰<span class="btn-label">Horários</span></button>
             <button class="btn-icon" id="btnPanToggle" aria-label="Ativar visão compacta" title="Visão compacta" onclick="togglePanoramic()">🔍<span class="btn-label">Compactar</span></button>
             <button class="btn-icon active" id="btnThemeToggle" aria-label="Alternar tema" title="Alternar tema" onclick="toggleDarkMode()">🌓<span class="btn-label">Tema</span></button>
             <button class="btn-icon" aria-label="Exportar imagem" title="Exportar imagem" onclick="generateImage()">🖼️<span class="btn-label">Exportar</span></button>
-        </div>
+            <div id="membersDisplay" class="members-list"></div>
     </div>
 
     <div class="context-panel">
-        <div class="control-row">
+        <div class="compact-controls">
+            <select id="groupSelect" aria-label="Escolher grupo" onchange="changeGroup(this.value)"></select>
+            <select id="periodSelect" aria-label="Escolher período" onchange="setFilter(this.value)">
+                <option value="currWeek">Semana atual</option>
+                <option value="nextWeek">Próxima semana</option>
+                <option value="padrao">Padrão semanal</option>
+                <option value="all">Semestre completo</option>
+                <option value="/08">Agosto</option>
+                <option value="/09">Setembro</option>
+                <option value="/10">Outubro</option>
+                <option value="/11">Novembro</option>
+                <option value="/12">Dezembro</option>
+            </select>
+
+            <div class="view-switcher" aria-label="Escolher visualização">
+                <button class="view-btn" data-view="matrix" onclick="setViewMode('matrix')">▦ Grade</button>
+                <button class="view-btn" data-view="agenda" onclick="setViewMode('agenda')">☷ Agenda</button>
+                <button class="view-btn" data-view="calendar" onclick="setViewMode('calendar')">▣ Calendário</button>
+            </div>
+        </div>
+
+        <div class="control-row legacy-filters" aria-hidden="true">
             <div class="filter-scroll-area">
-                <select id="groupSelect" onchange="changeGroup(this.value)"></select>
                 <span id="todayDisplay" class="today-display"></span>
                 <button class="filter-btn special" id="btn-currWeek" onclick="setFilter('currWeek')">Semana Atual</button>
                 <button class="filter-btn special" id="btn-nextWeek" onclick="setFilter('nextWeek')">Próxima Semana</button>
@@ -470,14 +537,6 @@
                 <button class="filter-btn" id="btn-all" onclick="setFilter('all')">Semestre</button>
                 <div id="monthButtons" style="display:contents;"></div>
             </div>
-        </div>
-        
-        <div id="membersDisplay" class="members-list"></div>
-
-        <div class="view-switcher" aria-label="Escolher visualização">
-            <button class="view-btn" data-view="matrix" onclick="setViewMode('matrix')">▦ Grade</button>
-            <button class="view-btn" data-view="agenda" onclick="setViewMode('agenda')">☷ Agenda</button>
-            <button class="view-btn" data-view="calendar" onclick="setViewMode('calendar')">▣ Calendário</button>
         </div>
 
         <div id="sliderDrawer" class="slider-drawer">
@@ -732,6 +791,14 @@ function toggleDarkMode() {
     const isDark = document.body.classList.toggle('dark-theme');
     localStorage.setItem('theme', isDark ? 'dark' : 'light');
     document.getElementById('btnThemeToggle').classList.toggle('active', !isDark);
+}
+
+function toggleOptions(forceState) {
+    const panel = document.getElementById('optionsPanel');
+    const button = document.getElementById('menuToggle');
+    const shouldOpen = typeof forceState === 'boolean' ? forceState : !panel.classList.contains('open');
+    panel.classList.toggle('open', shouldOpen);
+    button.setAttribute('aria-expanded', shouldOpen ? 'true' : 'false');
 }
 
 function toggleHours() { 
@@ -1283,6 +1350,8 @@ function setFilter(val, skipUpdate = false) {
         }
     });
     activeFilter = val;
+    const periodSelect = document.getElementById('periodSelect');
+    if (periodSelect) periodSelect.value = val;
     document.body.classList.toggle('semester-mode', val === 'all');
     if(!skipUpdate) updateView(false); 
 }
