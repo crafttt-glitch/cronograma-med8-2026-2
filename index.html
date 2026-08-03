@@ -312,6 +312,10 @@
 
         .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; gap: 4px; }
         .card-title { font-weight: 700; color: var(--text-title); font-size: 0.85rem; line-height: 1.1; letter-spacing: -0.2px; }
+        .subject-block.semantic-class:not(.holiday) .card-title { color: var(--class-color); font-weight: 800; }
+        body.dark-theme .subject-block.semantic-class:not(.holiday) .card-title { color: var(--class-color); text-shadow: 0 1px 8px color-mix(in srgb, var(--class-color) 18%, transparent); }
+        .subject-block.holiday .card-title { color: #b45309; font-weight: 800; }
+        body.dark-theme .subject-block.holiday .card-title { color: #fbbf24; text-shadow: 0 1px 8px rgba(251,191,36,.16); }
         
         .pill-wrapper { display: flex; gap: 2px; flex-wrap: wrap; justify-content: flex-end; }
         .pill { font-size: 0.55rem; font-weight: 700; padding: 3px 6px; border-radius: 8px; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; flex-shrink: 0; color: #ffffff; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border: 1px solid transparent; }
