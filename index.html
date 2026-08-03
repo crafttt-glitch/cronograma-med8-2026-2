@@ -141,7 +141,6 @@
         body { font-family: 'Inter', 'Segoe UI', sans-serif; background-color: var(--body-bg); color: var(--text-main); display: flex; flex-direction: column; align-items: center; margin: 0; padding: 5px; padding-bottom: 90px; overflow-x: hidden; }
         
         body.capturing * { animation: none !important; transition: none !important; transform: none !important; box-shadow: none !important; }
-        body.capturing .today-column { box-shadow: none !important; border-color: var(--primary-blue) !important; }
         body.capturing .next-class-popup { display: none !important; }
         body.capturing .subject-block.semantic-class:not(.holiday) { background: var(--card-bg) !important; border-color: var(--class-color) !important; }
         body.capturing .subject-block.semantic-class:not(.holiday) .pill { background: transparent !important; color: var(--class-color) !important; border-color: var(--class-color) !important; }
@@ -234,6 +233,7 @@
         th { background-color: var(--header-bg-green); color: white; text-transform: uppercase; font-size: 0.65rem; padding: 12px 8px; border-right: 1px solid rgba(255,255,255,0.1); letter-spacing: 0.5px; position: sticky; top: 0; z-index: 10; font-weight: 700; }
         .weekday-label { display: block; }
         .weekday-date { display: inline-grid; place-items: center; min-width: 23px; height: 20px; margin-top: 5px; padding: 0 5px; border: 1px solid rgba(255,255,255,.30); border-radius: 7px; background: rgba(255,255,255,.16); box-shadow: inset 0 1px 0 rgba(255,255,255,.15); font-size: .62rem; line-height: 1; letter-spacing: 0; }
+        .weekday-today { display:block; width:fit-content; margin:4px auto 0; padding:2px 5px; border:1px solid rgba(187,247,208,.38); border-radius:999px; background:rgba(34,197,94,.18); color:#dcfce7; font-size:.38rem; line-height:1; letter-spacing:.06em; }
         
         th.weekend-header { background-color: var(--weekend-header-bg) !important; }
 
@@ -244,10 +244,6 @@
         tr:last-child td { border-bottom: none; }
         
         .time-col { background-color: var(--header-bg-blue); color: white; width: 40px; text-align: center; font-weight: 800; vertical-align: middle; border-bottom: 1px solid rgba(255,255,255,0.1); position: sticky; left: 0; z-index: 20; }
-
-        th.today-column { border: 2px solid var(--neon-color) !important; border-bottom: none !important; box-shadow: 0 -4px 15px var(--neon-color) !important; z-index: 25; }
-        td.today-column { border-left: 2px solid var(--neon-color) !important; border-right: 2px solid var(--neon-color) !important; border-top: none !important; border-bottom: none !important; box-shadow: inset 3px 0 8px -4px var(--neon-color), inset -3px 0 8px -4px var(--neon-color) !important; z-index: 5; }
-        tbody tr:last-child td.today-column { border-bottom: 2px solid var(--neon-color) !important; border-radius: 0 0 12px 12px; box-shadow: 0 4px 15px var(--neon-color), inset 3px 0 8px -4px var(--neon-color), inset -3px 0 8px -4px var(--neon-color) !important; }
 
         .col-seg { width: var(--w-seg); } .col-ter { width: var(--w-ter); } .col-qua { width: var(--w-qua); } .col-qui { width: var(--w-qui); } .col-sex { width: var(--w-sex); } .col-sab { width: var(--w-sab); }
 
@@ -454,6 +450,7 @@
         body.panoramic-mode .calendar-grid { min-width: 0; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 2px; }
         body.panoramic-mode .cal-header { font-size: 0.4rem; padding: 2px 0; }
         body.panoramic-mode .weekday-date { min-width: 14px; height: 12px; margin-top: 2px; padding: 0 2px; border-radius: 3px; font-size: .36rem; }
+        body.panoramic-mode .weekday-today { margin-top:2px; padding:1px 2px; font-size:.25rem; }
         body.panoramic-mode .cal-day { min-height: 50px; padding: 1px; border-radius: 4px; }
         body.panoramic-mode .cal-date { font-size: 0.45rem; margin-bottom: 2px; padding-right: 2px; }
         body.panoramic-mode .cal-zone { padding: 1px 1px 1px 6px; min-height: 12px; gap: 1px; margin-bottom: 1px; }
@@ -2844,8 +2841,6 @@ function updateView(shouldShowPopup = false) {
     document.getElementById('agenda-area').style.display = 'none';
     document.getElementById('capture-area').style.display = 'inline-block';
 
-    let todayIndex = new Date().getDay(); if (todayIndex === 0) todayIndex = 7;
-    const isCurrentWeekMode = activeFilter === 'currWeek';
     const isSingleWeekFilter = activeFilter === 'currWeek' || activeFilter === 'nextWeek';
     const selectedWeekBounds = isSingleWeekFilter ? getWeekBounds(activeFilter === 'nextWeek' ? 1 : 0) : null;
     
@@ -2860,7 +2855,6 @@ function updateView(shouldShowPopup = false) {
             const matches = DATA_LEGO.filter(item => {
                 return item.d === day && item.t === turn && matchesActiveProfile(item, group);
             });
-            const highlightClass = (isCurrentWeekMode && (index + 1) === todayIndex) ? 'today-column' : '';
             let cellContent = "";
             matches.forEach(m => {
                 let show = false;
@@ -2934,7 +2928,7 @@ function updateView(shouldShowPopup = false) {
                     </div>`;
                 }
             });
-            html += `<td class="${highlightClass}">${cellContent || "—"}</td>`;
+            html += `<td>${cellContent || "—"}</td>`;
         });
         html += "</tr>";
     });
@@ -2945,10 +2939,6 @@ function updateView(shouldShowPopup = false) {
         document.getElementById('scheduleBody').innerHTML = html;
     }
 
-    document.querySelectorAll('#header-row th').forEach((th, i) => {
-        if(i > 0) th.classList.toggle('today-column', (isCurrentWeekMode && i === todayIndex));
-    });
-    
     renderStatsPanel();
     updatePopup();
 }
@@ -2965,8 +2955,10 @@ function updateMatrixDayHeaders(days) {
         const date = getDateForWeekday(bounds.start, index + 1);
         const dayNumber = String(date.getDate()).padStart(2, '0');
         const fullDate = date.toLocaleDateString('pt-BR');
-        header.innerHTML = `<span class="weekday-label">${days[index]}</span><span class="weekday-date">${dayNumber}</span>`;
-        header.setAttribute('aria-label', `${days[index]}, ${fullDate}`);
+        const today = new Date();
+        const isToday = activeFilter === 'currWeek' && date.getFullYear() === today.getFullYear() && date.getMonth() === today.getMonth() && date.getDate() === today.getDate();
+        header.innerHTML = `<span class="weekday-label">${days[index]}</span><span class="weekday-date">${dayNumber}</span>${isToday ? '<span class="weekday-today">HOJE</span>' : ''}`;
+        header.setAttribute('aria-label', `${days[index]}, ${fullDate}${isToday ? ', hoje' : ''}`);
     });
 }
 
