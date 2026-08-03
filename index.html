@@ -1614,10 +1614,7 @@ function getLocColorVar(l) {
     return 'var(--popup-text)';
 }
 
-/*
- * Nome e cor usados somente na Agenda e no Calendário.
- * A Grade continua priorizando professor e local, como antes.
- */
+/* Nome e cor padronizados em Grade, Agenda, Calendário e próxima aula. */
 function getClassPresentation(item) {
     const activity = item.act.toUpperCase();
     const professor = item.p.toUpperCase();
@@ -1625,7 +1622,7 @@ function getClassPresentation(item) {
 
     if (activity.startsWith('HP-8') && professor.includes('KALYSTA')) {
         if (location.includes('AUD HRBA')) {
-            return { title: 'HRBA - Aud/Kalysta', color: 'var(--c-regional-aud)' };
+            return { title: 'HRBA - Auditório', color: 'var(--c-regional-aud)' };
         }
         return { title: 'HRBA - Onco/Hemato', color: 'var(--c-regional-onco)' };
     }
@@ -1650,7 +1647,7 @@ function getClassPresentation(item) {
             return { title: 'HRBA - UTI', color: 'var(--c-regional-uti)' };
         }
         if (location.includes('UEPA')) {
-            return { title: 'UEPA - Wesley', color: 'var(--c-uepa-wesley)' };
+            return { title: 'UEPA - HP', color: 'var(--c-uepa-wesley)' };
         }
     }
 
@@ -2908,21 +2905,13 @@ function updateView(shouldShowPopup = false) {
                     const isHoliday = actL.includes('feriado');
                     if (isHoliday) colorClass += " holiday";
 
-                    let displayTitle = abrev(m.p);
+                    let displayTitle = presentation?.title || m.act.replace(' (FERIADO)', '');
 
                     if (m.act.includes("TUTORIAL")) displayTitle = "Tutorial";
                     else if (m.act.includes("MORFO")) displayTitle = "Morfo";
                     else if (m.act.includes("GIESC")) displayTitle = "Giesc";
-                    else if (m.act.includes("HP-8")) displayTitle = abrev(m.p);
+                    if (isHoliday) displayTitle = 'Feriado';
 
-                    const locsArr = m.l.split('/');
-                    const hiddenLocations = new Set(['UEPA', 'SALAS C1 E C2', 'ACOLHIMENTO', 'CONF. 2']);
-                    let visibleLocations = locsArr.filter(l => !hiddenLocations.has(l.trim().toUpperCase())).map(loc => loc.trim());
-                    if (presentation && presentation.title === 'Ambulatório - Neuro') {
-                        visibleLocations = ['Ambulatório - Neuro'];
-                    }
-                    const pills = visibleLocations.map(loc => `<span class="pill ${getPillClass(loc)}">${loc}</span>`).join('');
-                    const holidayBadge = isHoliday ? `<span class="holiday-badge">Feriado</span>` : '';
                     const displayHour = m.h ? m.h.replace(/\s*\/\s*/g, '<br>') : '';
                     const hourBadge = displayHour ? `<div class="time-line"><span class="badge-time">${displayHour}</span></div>` : "";
                     
@@ -2939,7 +2928,7 @@ function updateView(shouldShowPopup = false) {
                         ? (relativeDayText ? `<div class="relative-day-line"><span class="relative-day-badge">${relativeDayText}</span></div>` : '')
                         : `<div class="date-line">${dateDisplay}</div>`;
                     cellContent += `<div class="subject-block ${colorClass}${semanticClass}"${semanticStyle} role="button" tabindex="0" aria-label="Abrir detalhes de ${displayTitle}" onclick="showCalPopup('${m.id}', '${filteredDates}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showCalPopup('${m.id}', '${filteredDates}')}">
-                        <div class="card-header"><span class="card-title">${isHoliday ? '⚠️ ' : ''}${displayTitle}</span><div class="pill-wrapper">${holidayBadge}${pills}</div></div>
+                        <div class="card-header"><span class="card-title">${isHoliday ? '⚠️ ' : ''}${displayTitle}</span></div>
                         ${dateLine}${hourBadge}
                     </div>`;
                 }
