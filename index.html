@@ -44,18 +44,29 @@
             --bg-morfo: linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%);
             
             /* Barras Laterais e Cores Sólidas */
-            --bar-hp8: #1565c0; --bar-giesc: #2e7d32; --bar-tutorial: #7b1fa2; --bar-morfo: #4a148c;
+            --bar-hp8: #1565c0; --bar-giesc: var(--c-prof-david); --bar-tutorial: #7140a3; --bar-morfo: #9f3f7f;
 
-            /* Cores semânticas da Agenda e do Calendário */
-            --c-regional-aud: #9a6700;
-            --c-regional-onco: #d81b60;
-            --c-municipal-neuro: #1565c0;
-            --c-amb-neuro: #00897b;
-            --c-amb-uro: #ef6c00;
-            --c-regional-uti: #c62828;
-            --c-uepa-wesley: #2e7d32;
-            --c-uepa-cardio: #5d4037;
-            --c-conf-neuro: #3949ab;
+            /* Identidade cromática por professor */
+            --c-prof-kalysta: #c6284e;
+            --c-prof-wesley: #c94e12;
+            --c-prof-marcos: #245fc4;
+            --c-prof-alexandre: #8a6400;
+            --c-prof-david: #3f7d2a;
+
+            /* Compatibilidade das aulas com a identidade do professor */
+            --c-regional-aud: var(--c-prof-kalysta);
+            --c-regional-onco: var(--c-prof-kalysta);
+            --c-municipal-neuro: var(--c-prof-marcos);
+            --c-amb-neuro: var(--c-prof-marcos);
+            --c-amb-uro: var(--c-prof-wesley);
+            --c-regional-uti: var(--c-prof-wesley);
+            --c-uepa-wesley: var(--c-prof-wesley);
+            --c-uepa-cardio: var(--c-prof-alexandre);
+            --c-conf-neuro: var(--c-prof-marcos);
+            --c-hrba-david: var(--c-prof-david);
+            --c-hms-david: var(--c-prof-david);
+            --c-giesc-david: var(--c-prof-david);
+            --c-uepa-ortop: var(--c-prof-david);
 
             /* Pills (Cores dos Locais) */
             --c-hms: #ef6c00; --c-uepa: #00897b; --c-hrba: #283593; 
@@ -104,16 +115,12 @@
             --bg-tutorial: linear-gradient(135deg, #2a1b2e 0%, #1a0f1d 100%);
             --bg-morfo: linear-gradient(135deg, #1f1a24 0%, #120e16 100%);
             
-            --bar-hp8: #448aff; --bar-giesc: #66bb6a; --bar-tutorial: #ab47bc; --bar-morfo: #7e57c2;
-            --c-regional-aud: #ffd54f;
-            --c-regional-onco: #ff80ab;
-            --c-municipal-neuro: #82b1ff;
-            --c-amb-neuro: #64ffda;
-            --c-amb-uro: #ffb74d;
-            --c-regional-uti: #ff8a80;
-            --c-uepa-wesley: #81c784;
-            --c-uepa-cardio: #d7ccc8;
-            --c-conf-neuro: #9fa8da;
+            --bar-hp8: #448aff; --bar-giesc: var(--c-prof-david); --bar-tutorial: #c58be3; --bar-morfo: #e18acf;
+            --c-prof-kalysta: #ff6b86;
+            --c-prof-wesley: #ff985c;
+            --c-prof-marcos: #73a7ff;
+            --c-prof-alexandre: #ffd05a;
+            --c-prof-david: #7dd66a;
             --c-hms: #ffb74d; --c-uepa: #64ffda; --c-hrba: #448aff; 
             --c-ures: #ff80ab; --c-ubs: #b2ff59; --c-amb: #84ffff;
 
@@ -144,6 +151,7 @@
         body.capturing .next-class-popup { display: none !important; }
         body.capturing .subject-block.semantic-class:not(.holiday) { background: var(--card-bg) !important; border-color: var(--class-color) !important; }
         body.capturing .subject-block.semantic-class:not(.holiday) .pill { background: transparent !important; color: var(--class-color) !important; border-color: var(--class-color) !important; }
+        body.capturing .subject-block.semantic-class:not(.holiday) .card-title { color: var(--class-color) !important; text-shadow: none !important; }
         body.capturing .subject-block.holiday .pill { background: transparent !important; color: #b45309 !important; border-color: #f59e0b !important; }
         body.capturing .agenda-card:not(.holiday) { background: var(--card-bg) !important; }
         body.capturing .micro-card { background: var(--micro-color) !important; border-color: var(--micro-color) !important; color: #fff !important; }
@@ -313,7 +321,7 @@
         .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; gap: 4px; }
         .card-title { font-weight: 700; color: var(--text-title); font-size: 0.85rem; line-height: 1.1; letter-spacing: -0.2px; }
         .subject-block.semantic-class:not(.holiday) .card-title { color: var(--class-color); font-weight: 800; }
-        body.dark-theme .subject-block.semantic-class:not(.holiday) .card-title { color: var(--class-color); text-shadow: 0 1px 8px color-mix(in srgb, var(--class-color) 18%, transparent); }
+        body.dark-theme .subject-block.semantic-class:not(.holiday) .card-title { color: var(--class-title-dark, var(--class-color)); text-shadow: 0 1px 8px color-mix(in srgb, var(--class-title-dark, var(--class-color)) 18%, transparent); }
         .subject-block.holiday .card-title { color: #b45309; font-weight: 800; }
         body.dark-theme .subject-block.holiday .card-title { color: #fbbf24; text-shadow: 0 1px 8px rgba(251,191,36,.16); }
         
@@ -1001,6 +1009,19 @@
         .dev-setting-row span { display:block; margin-top:3px; color:var(--text-meta); font-size:.59rem; line-height:1.4; }
         .dev-action { flex:0 0 auto; min-height:35px; padding:0 11px; border:1px solid rgba(239,68,68,.25); border-radius:10px; background:rgba(239,68,68,.08); color:#b91c1c; font:760 .6rem 'Inter',sans-serif; cursor:pointer; }
         body.dark-theme .dev-action { color:#fca5a5; border-color:rgba(248,113,113,.26); background:rgba(239,68,68,.12); }
+        .dev-csv-box { padding:13px; border:1px solid var(--glass-stroke-soft); border-radius:15px; background:rgba(255,255,255,.11); }
+        .dev-csv-head { display:flex; align-items:flex-start; justify-content:space-between; gap:10px; }
+        .dev-csv-head strong { display:block; font-size:.73rem; }
+        .dev-csv-head span { display:block; margin-top:3px; color:var(--text-meta); font-size:.59rem; line-height:1.4; }
+        .dev-csv-state { flex:0 0 auto; padding:4px 8px; border-radius:999px; background:rgba(100,116,139,.12); color:var(--text-meta); font-size:.54rem; font-weight:800; }
+        .dev-csv-state.active { background:rgba(34,197,94,.14); color:#15803d; }
+        body.dark-theme .dev-csv-state.active { color:#86efac; }
+        .dev-csv-input { width:100%; min-height:132px; margin-top:11px; padding:11px 12px; resize:vertical; border:1px solid var(--glass-stroke-soft); border-radius:12px; outline:none; background:color-mix(in srgb,var(--card-bg) 82%,transparent); color:var(--text-main); font:500 .61rem/1.45 ui-monospace,SFMono-Regular,Consolas,monospace; }
+        .dev-csv-input:focus { border-color:rgba(14,116,144,.55); box-shadow:0 0 0 3px rgba(14,116,144,.10); }
+        .dev-csv-actions { display:flex; justify-content:flex-end; gap:8px; margin-top:9px; }
+        .dev-csv-action { min-height:36px; padding:0 11px; border:1px solid var(--glass-stroke-soft); border-radius:10px; background:rgba(255,255,255,.12); color:var(--text-main); font:760 .6rem 'Inter',sans-serif; cursor:pointer; }
+        .dev-csv-action.primary { border-color:#0b668e; background:#0b6f99; color:#fff; }
+        body.dark-theme .dev-csv-box, body.dark-theme .dev-csv-input { background:rgba(148,163,184,.07); }
         @media (max-width: 700px) {
             .stats-grid { grid-template-columns: 1fr; }
             .stats-dialog-overlay { padding: 10px; align-items: end; }
@@ -1279,6 +1300,11 @@
         </div>
         <div class="dev-settings">
             <label class="dev-setting-row"><span><strong>Blur em Mais opções</strong><span>Desfoca a interface enquanto o menu está aberto.</span></span><input id="developerBlurToggle" class="stats-switch" type="checkbox" onchange="setOptionsBlur(this.checked)"></label>
+            <section class="dev-csv-box" aria-labelledby="customCsvTitle">
+                <div class="dev-csv-head"><div><strong id="customCsvTitle">Usar CSV personalizado</strong><span>Cole o conteúdo completo do CSV. Quando aplicado, ele substitui a fonte padrão somente neste dispositivo.</span></div><span id="customCsvState" class="dev-csv-state">Padrão</span></div>
+                <textarea id="customCsvInput" class="dev-csv-input" spellcheck="false" placeholder="Atividade,Dia,Turno,Professor,Horário,Local,..."></textarea>
+                <div class="dev-csv-actions"><button class="dev-csv-action" type="button" onclick="restoreDefaultCsv()">Usar padrão</button><button class="dev-csv-action primary" type="button" onclick="applyCustomCsv()">Aplicar CSV</button></div>
+            </section>
             <div class="dev-setting-row"><span><strong>Ocultar Estatísticas</strong><span>Bloqueia novamente o easter egg de MED8.</span></span><button class="dev-action" type="button" onclick="resetStatsEasterEgg()">Ocultar</button></div>
             <div class="dev-setting-row"><span><strong>Ocultar modo desenvolvedor</strong><span>Bloqueia novamente o easter egg do rodapé.</span></span><button class="dev-action" type="button" onclick="resetDeveloperEasterEgg()">Ocultar</button></div>
         </div>
@@ -1297,8 +1323,10 @@ const ANO_LETIVO = 2026;
 const SEMESTRE = "2026.2";
 const START_DATE = new Date(2026, 7, 3);
 const END_DATE = new Date(2026, 11, 19, 23, 59, 59);
-const CACHE_KEY = "med8_csv_cache_2026_2";
-const CACHE_TIME_KEY = "med8_csv_cache_time_2026_2";
+const CACHE_KEY = "med8_csv_cache_2026_2_interface4";
+const CACHE_TIME_KEY = "med8_csv_cache_time_2026_2_interface4";
+const CUSTOM_CSV_KEY = "med8_custom_csv_2026_2_v1";
+const CUSTOM_CSV_ENABLED_KEY = "med8_custom_csv_enabled_2026_2_v1";
 const GROUP_STORAGE_KEY = "medGroup_2026_2_v2";
 const HP_MODE_STORAGE_KEY = "medHpModeByGroup_2026_2_v2";
 const WEEK_START_STORAGE_KEY = "medWeekStartDay_v1";
@@ -1311,7 +1339,7 @@ const STATS_WEEK_KEY = "medStatsWeek_v1";
 const STATS_PROGRESS_MODE_KEY = "medStatsProgressMode_v1";
 const DEV_UNLOCK_KEY = "medDeveloperUnlocked_v1";
 const OPTIONS_BLUR_KEY = "medOptionsBlurEnabled_v1";
-const DATA_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTsB-awD1AynH11CjHG4vkJoIlmQa_ZMh8zt8w-A_I41TCLs_5YLfpqb1U2donQLewneaatlGcg81E0/pub?gid=512229890&single=true&output=csv";
+const DATA_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQEkQQIISSNc69dnrWFOTGVu6hHV59XEwDoHY71aGVPK9LxcIsdHmYSRkdKmQspatxRYrjhvMMlGvdK/pub?gid=1414885897&single=true&output=csv";
 
 let showHours = false;
 let popupTimeout;
@@ -1410,6 +1438,11 @@ function processarDados(csvText) {
             geral: headers.findIndex(h => h.includes("semanal"))
         };
 
+        const requiredColumns = ['act','p','l','d','t'];
+        if (requiredColumns.some(key => idx[key] < 0) || [idx.gA,idx.gB,idx.gC,idx.gD,idx.geral].every(value => value < 0)) {
+            throw new Error('Cabeçalhos obrigatórios não encontrados.');
+        }
+
         const novoLego = [];
 
         for (let i = 1; i < rows.length; i++) {
@@ -1468,6 +1501,17 @@ function setSyncStatus(state, text) {
 }
 
 async function sincronizarDados(manual = false) {
+    const customCsv = localStorage.getItem(CUSTOM_CSV_KEY);
+    const customEnabled = localStorage.getItem(CUSTOM_CSV_ENABLED_KEY) === 'true';
+    if (customEnabled && customCsv) {
+        if (processarDados(customCsv)) {
+            setSyncStatus('online', 'CSV personalizado');
+            document.getElementById('capture-area').style.opacity = '1';
+            refreshCustomCsvControls();
+            return;
+        }
+        localStorage.removeItem(CUSTOM_CSV_ENABLED_KEY);
+    }
     const localData = localStorage.getItem(CACHE_KEY);
 
     if (localData) {
@@ -1624,7 +1668,28 @@ function getClassPresentation(item) {
     const professor = item.p.toUpperCase();
     const location = item.l.toUpperCase();
 
+    if (activity.startsWith('GIESC') && professor.includes('DAVID PIRES')) {
+        return { title: 'GIESC - David', color: 'var(--c-giesc-david)' };
+    }
+
+    if (activity.startsWith('HP-8') && professor.includes('DAVID PIRES')) {
+        if (item.t === 'Noite' && location.includes('UEPA')) {
+            return { title: 'UEPA - Ortop', color: 'var(--c-uepa-ortop)' };
+        }
+        if (location.includes('HMS')) {
+            return { title: 'HMS - David', color: 'var(--c-hms-david)' };
+        }
+        if (location.includes('HRBA')) {
+            return { title: 'HRBA - David', color: 'var(--c-hrba-david)' };
+        }
+    }
+
     if (activity.startsWith('HP-8') && professor.includes('KALYSTA')) {
+        const topic = item.act.match(/^HP-8\s*-\s*(.+)$/i)?.[1]?.trim();
+        if (topic) {
+            const formattedTopic = topic.toLocaleLowerCase('pt-BR').replace(/(^|[\s/-])\p{L}/gu, letter => letter.toLocaleUpperCase('pt-BR'));
+            return { title: `HRBA - ${formattedTopic}`, color: 'var(--c-regional-aud)' };
+        }
         if (location.includes('AUD HRBA')) {
             return { title: 'HRBA - Auditório', color: 'var(--c-regional-aud)' };
         }
@@ -1664,6 +1729,15 @@ function getClassPresentation(item) {
     if (activity.includes('GIESC')) return { title: 'Giesc', color: 'var(--bar-giesc)' };
     if (activity.startsWith('HP-8')) return { title: null, color: 'var(--bar-hp8)' };
 
+    return null;
+}
+
+/* Ajuste óptico exclusivo dos títulos na Grade escura. */
+function getDarkGradeTitleColor(item) {
+    const professor = item.p.toUpperCase();
+    if (professor.includes('MARCOS HONORATO')) return '#5f8fe8';
+    if (professor.includes('ALEXANDRE NETO')) return '#c49a28';
+    if (professor.includes('DAVID PIRES')) return '#70b852';
     return null;
 }
 
@@ -2167,6 +2241,7 @@ function handleDeveloperEasterTap() {
 function openDeveloperDialog() {
     const dialog = document.getElementById('developerDialog');
     document.getElementById('developerBlurToggle').checked = optionsBlurEnabled;
+    refreshCustomCsvControls();
     dialog.classList.add('visible');
     dialog.setAttribute('aria-hidden','false');
     setTimeout(() => dialog.querySelector('.stats-dialog-close')?.focus({ preventScroll:true }),20);
@@ -2183,6 +2258,41 @@ function setOptionsBlur(enabled) {
     optionsBlurEnabled = enabled;
     localStorage.setItem(OPTIONS_BLUR_KEY,String(enabled));
     document.body.classList.toggle('options-blur-disabled',!enabled);
+}
+
+function refreshCustomCsvControls() {
+    const input = document.getElementById('customCsvInput');
+    const state = document.getElementById('customCsvState');
+    if (!input || !state) return;
+    const enabled = localStorage.getItem(CUSTOM_CSV_ENABLED_KEY) === 'true' && !!localStorage.getItem(CUSTOM_CSV_KEY);
+    input.value = localStorage.getItem(CUSTOM_CSV_KEY) || '';
+    state.textContent = enabled ? 'Personalizado ativo' : 'Padrão';
+    state.classList.toggle('active', enabled);
+}
+
+function applyCustomCsv() {
+    const input = document.getElementById('customCsvInput');
+    const csv = input?.value.trim();
+    if (!csv) {
+        alert('Cole o conteúdo do CSV antes de aplicar.');
+        input?.focus();
+        return;
+    }
+    if (!processarDados(csv)) {
+        alert('Não foi possível ler esse CSV. Confira se a primeira linha contém Atividade, Dia, Turno, Professor, Local e as colunas de datas.');
+        return;
+    }
+    localStorage.setItem(CUSTOM_CSV_KEY, csv);
+    localStorage.setItem(CUSTOM_CSV_ENABLED_KEY, 'true');
+    setSyncStatus('online', 'CSV personalizado');
+    refreshCustomCsvControls();
+    alert('CSV personalizado aplicado neste dispositivo.');
+}
+
+function restoreDefaultCsv() {
+    localStorage.removeItem(CUSTOM_CSV_ENABLED_KEY);
+    refreshCustomCsvControls();
+    sincronizarDados(true);
 }
 
 function resetStatsEasterEgg() {
@@ -2927,7 +3037,8 @@ function updateView(shouldShowPopup = false) {
                     }
 
                     const semanticClass = presentation && !isHoliday ? ' semantic-class' : '';
-                    const semanticStyle = presentation && !isHoliday ? ` style="--class-color:${presentation.color}"` : '';
+                    const gradeTitleColor = presentation && !isHoliday ? getDarkGradeTitleColor(m) : null;
+                    const semanticStyle = presentation && !isHoliday ? ` style="--class-color:${presentation.color}${gradeTitleColor ? `;--class-title-dark:${gradeTitleColor}` : ''}"` : '';
                     const dateLine = isSingleWeekFilter
                         ? (relativeDayText ? `<div class="relative-day-line"><span class="relative-day-badge">${relativeDayText}</span></div>` : '')
                         : `<div class="date-line">${dateDisplay}</div>`;
