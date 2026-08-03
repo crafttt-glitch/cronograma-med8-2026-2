@@ -1050,7 +1050,7 @@
             <button class="btn-icon" id="btnPanToggle" aria-label="Ativar visão compacta" title="Visão compacta" onclick="togglePanoramic()">🔍<span class="btn-label">Compactar</span></button>
             <button class="btn-icon active" id="btnThemeToggle" aria-label="Alternar tema" title="Alternar tema" onclick="toggleDarkMode()">🌓<span class="btn-label">Tema</span></button>
             <button class="btn-icon" id="btnExport" aria-label="Exportar imagem" title="Exportar imagem" onclick="generateImage()">🖼️<span class="btn-label">Exportar</span></button>
-            <button class="btn-icon" id="btnCalendarExport" aria-label="Escolher período e exportar para Google Agenda" title="Exportar para Google Agenda" onclick="openCalendarExportDialog()">📆<span class="btn-label">Google</span></button>
+            <button class="btn-icon" id="btnCalendarExport" aria-label="Escolher período e exportar calendário" title="Exportar calendário" onclick="openCalendarExportDialog()">📆<span class="btn-label">Calendário</span></button>
             <select id="weekStartSelect" class="native-control-select" aria-label="Escolher início da semana" onchange="changeWeekStart(this.value)">
                 <option value="0">Domingo</option><option value="1">Segunda-feira</option><option value="2">Terça-feira</option><option value="3">Quarta-feira</option><option value="4">Quinta-feira</option><option value="5">Sexta-feira</option><option value="6">Sábado</option>
             </select>
@@ -1068,7 +1068,7 @@
             <div class="custom-control">
             <select id="periodSelect" class="native-control-select" aria-label="Escolher período" onchange="setFilter(this.value)">
                 <option value="currWeek">Semana atual</option>
-                <option value="nextWeek">Próxima semana</option>
+                <option value="nextWeek">Semana que vem</option>
                 <option value="padrao">Semana padrão</option>
                 <option value="all">Semestre completo</option>
                 <option value="/08">Agosto</option>
@@ -1091,7 +1091,7 @@
             <div class="filter-scroll-area">
                 <span id="todayDisplay" class="today-display"></span>
                 <button class="filter-btn special" id="btn-currWeek" onclick="setFilter('currWeek')">Semana Atual</button>
-                <button class="filter-btn special" id="btn-nextWeek" onclick="setFilter('nextWeek')">Próxima Semana</button>
+                <button class="filter-btn special" id="btn-nextWeek" onclick="setFilter('nextWeek')">Semana que vem</button>
             </div>
             
             <div class="filter-scroll-area" id="monthButtonsContainer">
@@ -1199,14 +1199,14 @@
     <div class="calendar-export-card">
         <div class="calendar-export-header">
             <div>
-                <div class="calendar-export-title-row"><span class="calendar-export-title-icon" aria-hidden="true">📆</span><h2 id="calendarExportTitle">Exportar para Google Agenda</h2></div>
+                <div class="calendar-export-title-row"><span class="calendar-export-title-icon" aria-hidden="true">📆</span><h2 id="calendarExportTitle">Exportar calendário</h2></div>
                 <p>Marque um mês inteiro ou abra-o para escolher somente algumas semanas.</p>
             </div>
             <button class="calendar-export-close" type="button" aria-label="Fechar" onclick="closeCalendarExportDialog()">×</button>
         </div>
         <div class="calendar-period-grid" id="calendarPeriodGrid"></div>
         <aside class="calendar-import-guide">
-            <p>Após baixar, toque no arquivo <strong>.ics</strong> e escolha seu aplicativo de calendário favorito para importar as aulas.</p>
+            <p>Após baixar, toque no arquivo <strong>.ics</strong> e escolha seu aplicativo de calendário para importar as aulas.</p>
         </aside>
         <div class="calendar-export-actions">
             <button class="calendar-export-action" type="button" onclick="closeCalendarExportDialog()">Cancelar</button>
@@ -2816,7 +2816,7 @@ function updateView(shouldShowPopup = false) {
     const turns = ["Manhã", "Tarde", "Noite"];
     const sorted = [...GROUP_MEMBERS[group]].sort();
     document.getElementById('membersDisplay').innerHTML = sorted.map(renderMemberName).join(', ');
-    const filterNames = {currWeek:'Semana atual', nextWeek:'Próxima semana', padrao:'Padrão', all:'Semestre', '/08':'Agosto', '/09':'Setembro', '/10':'Outubro', '/11':'Novembro', '/12':'Dezembro'};
+    const filterNames = {currWeek:'Semana atual', nextWeek:'Semana que vem', padrao:'Padrão', all:'Semestre', '/08':'Agosto', '/09':'Setembro', '/10':'Outubro', '/11':'Novembro', '/12':'Dezembro'};
     document.getElementById('mobileQuickLabel').textContent = `Grupo ${group} · ${filterNames[activeFilter] || 'Cronograma'}`;
 
     if (viewMode === 'calendar') {
