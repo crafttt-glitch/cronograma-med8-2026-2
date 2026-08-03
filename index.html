@@ -296,6 +296,7 @@
         .micro-card:active { transform: scale(0.95); }
         
         body.dark-theme .micro-card { background-color: rgba(0, 0, 0, 0.3) !important; color: var(--micro-color); border: 1px solid var(--micro-color); border-left: 3px solid var(--micro-color); box-shadow: none; }
+        .micro-card.class-pending { opacity: .44; filter: grayscale(1) saturate(0); border-color: #7b8491; box-shadow: none; }
 
         @keyframes blockEnter { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
         
@@ -321,9 +322,11 @@
         .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; gap: 4px; }
         .card-title { font-weight: 700; color: var(--text-title); font-size: 0.85rem; line-height: 1.1; letter-spacing: -0.2px; }
         .subject-block.semantic-class:not(.holiday) .card-title { color: var(--class-color); font-weight: 800; }
-        body.dark-theme .subject-block.semantic-class:not(.holiday) .card-title { color: var(--class-title-dark, var(--class-color)); text-shadow: 0 1px 8px color-mix(in srgb, var(--class-title-dark, var(--class-color)) 18%, transparent); }
+        body.dark-theme .subject-block.semantic-class:not(.holiday) .card-title { color: var(--class-title-dark, var(--class-color)); text-shadow: 0 1px 8px color-mix(in srgb, var(--class-title-dark, var(--class-color)) 14%, transparent); }
         .subject-block.holiday .card-title { color: #b45309; font-weight: 800; }
         body.dark-theme .subject-block.holiday .card-title { color: #fbbf24; text-shadow: 0 1px 8px rgba(251,191,36,.16); }
+        .subject-block.class-pending { opacity: .46; filter: grayscale(1) saturate(0); border-color: #8b95a3 !important; box-shadow: none !important; background: color-mix(in srgb,#64748b 7%,var(--card-bg)) !important; }
+        .subject-block.class-pending::before { background: #7b8491; }
         
         .pill-wrapper { display: flex; gap: 2px; flex-wrap: wrap; justify-content: flex-end; }
         .pill { font-size: 0.55rem; font-weight: 700; padding: 3px 6px; border-radius: 8px; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; flex-shrink: 0; color: #ffffff; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border: 1px solid transparent; }
@@ -341,7 +344,8 @@
         .relative-day-line { display: flex; align-items: center; margin-top: 5px; }
         .relative-day-badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 7px; border: 1px solid rgba(22,163,74,.28); border-radius: 7px; background: rgba(34,197,94,.13); color: #147a36; font-size: .57rem; line-height: 1.1; font-weight: 780; white-space: nowrap; }
         .relative-day-badge::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: #22c55e; box-shadow: 0 0 0 2px rgba(34,197,94,.13); }
-        body.dark-theme .relative-day-badge { border-color: rgba(74,222,128,.28); background: rgba(34,197,94,.11); color: #86efac; }
+        body.dark-theme .relative-day-badge { border-color: rgba(74,222,128,.18); background: rgba(34,197,94,.075); color: #68c98b; }
+        body.dark-theme .relative-day-badge::before { background: #4dbb74; box-shadow: 0 0 0 2px rgba(34,197,94,.08); }
         
         .status-dot { width: 5px; height: 5px; background-color: var(--dot-color); border-radius: 50%; display: inline-block; margin-right: 5px; animation: pulse 3s infinite ease-in-out; }
         @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(0, 230, 118, 0.3); opacity: 0.8; } 50% { box-shadow: 0 0 0 3px rgba(0, 230, 118, 0); opacity: 1; } 100% { box-shadow: 0 0 0 0 rgba(0, 230, 118, 0); opacity: 0.8; } }
@@ -385,6 +389,7 @@
         .agenda-title { display: block; color: var(--text-title); font-size: 0.9rem; font-weight: 800; }
         .agenda-prof { display: block; color: var(--text-meta); font-size: 0.68rem; margin-top: 3px; }
         .agenda-location { color: var(--text-meta); font-size: 0.62rem; font-weight: 700; text-transform: uppercase; text-align: right; }
+        .agenda-card.class-pending { opacity: .46; filter: grayscale(1) saturate(0); border-color: #8b95a3; border-left-color: #7b8491; box-shadow: none; background: color-mix(in srgb,#64748b 7%,var(--card-bg)) !important; }
 
         .mobile-quickbar { position: sticky; top: 5px; z-index: 80; width: 100%; max-width: 1250px; display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 0 0 8px; padding: 8px 10px; border: 1px solid var(--border-color); border-radius: 12px; background: color-mix(in srgb, var(--card-bg) 94%, transparent); backdrop-filter: blur(12px); box-shadow: 0 4px 14px rgba(0,0,0,0.08); }
         .mobile-quickbar span { color: var(--text-title); font-size: 0.68rem; font-weight: 800; }
@@ -1732,13 +1737,28 @@ function getClassPresentation(item) {
     return null;
 }
 
-/* Ajuste óptico exclusivo dos títulos na Grade escura. */
+/* Estados especiais: a aula permanece visível, mas não entra nos cálculos. */
+const CLASS_STATE_RULES = [
+    {
+        key: 'pending',
+        excludedFromCalculations: true,
+        matches: item => /^HP-8\s*-\s*(ANEMIAS|COAGULOPATIAS|CARCINOGÊNESE)$/i.test(item.act.trim())
+    }
+];
+
+function getClassState(item) {
+    return CLASS_STATE_RULES.find(rule => rule.matches(item)) || null;
+}
+
+function isClassCountable(item) {
+    return !getClassState(item)?.excludedFromCalculations;
+}
+
+/* Suavização exclusiva dos títulos da Kalysta na Grade escura. */
 function getDarkGradeTitleColor(item) {
-    const professor = item.p.toUpperCase();
-    if (professor.includes('MARCOS HONORATO')) return '#5f8fe8';
-    if (professor.includes('ALEXANDRE NETO')) return '#c49a28';
-    if (professor.includes('DAVID PIRES')) return '#70b852';
-    return null;
+    const isKalysta = item.p.toUpperCase().includes('KALYSTA BORGES');
+    const isHrba = item.l.toUpperCase().includes('HRBA');
+    return isKalysta && isHrba ? '#b64a62' : null;
 }
 
 async function generateImage() {
@@ -1931,7 +1951,8 @@ function renderCalendar() {
                 
                 const dateStrParam = `${String(day).padStart(2,'0')}/${String(targetMonth + 1).padStart(2,'0')}`;
                 const isHoliday = actL.includes('feriado');
-                const cardHtml = `<div class="micro-card${isHoliday ? ' holiday' : ''}" role="button" tabindex="0" style="--micro-color: ${isHoliday ? '#f59e0b' : colorVar}" onclick="showCalPopup('${item.id}', '${dateStrParam}')">${isHoliday ? '⚠️ ' : ''}${displayTitle}</div>`;
+                const classState = getClassState(item);
+                const cardHtml = `<div class="micro-card${isHoliday ? ' holiday' : ''}${classState ? ` class-${classState.key}` : ''}" role="button" tabindex="0" aria-label="${displayTitle}" style="--micro-color: ${isHoliday ? '#f59e0b' : colorVar}" onclick="showCalPopup('${item.id}', '${dateStrParam}')">${isHoliday ? '⚠️ ' : ''}${displayTitle}</div>`;
                 
                 if (item.t === "Manhã") cardsM += cardHtml;
                 else if (item.t === "Tarde") cardsT += cardHtml;
@@ -2443,7 +2464,7 @@ function getStatisticsOccurrences(group, profileAware = false) {
     const occurrences = [];
     DATA_LEGO.forEach(item => {
         const matchesGroup = item.g === 'Todos' || item.g.includes(group);
-        if (!matchesGroup || item.act.toUpperCase().includes('FERIADO')) return;
+        if (!matchesGroup || item.act.toUpperCase().includes('FERIADO') || !isClassCountable(item)) return;
         if (profileAware && !matchesActiveProfile(item,group)) return;
         getItemOccurrences(item).forEach(date => occurrences.push({ item, date }));
     });
@@ -2722,7 +2743,7 @@ function exportCalendarICS(selectedPeriods) {
     const generatedAt = new Date().toISOString().replace(/[-:]/g, '').replace(/\.\d{3}Z$/, 'Z');
 
     DATA_LEGO.forEach(item => {
-        if (!matchesActiveProfile(item, group)) return;
+        if (!matchesActiveProfile(item, group) || !isClassCountable(item)) return;
         const presentation = getClassPresentation(item);
         const isHoliday = item.act.toLowerCase().includes('feriado');
         const baseTitle = presentation && presentation.title
@@ -2903,6 +2924,7 @@ function renderAgenda() {
             const actL = item.act.toLowerCase();
             const presentation = getClassPresentation(item);
             const holiday = actL.includes('feriado');
+            const classState = getClassState(item);
             let color = 'var(--bar-hp8)';
             if (actL.includes('tutorial')) color = 'var(--bar-tutorial)';
             else if (actL.includes('morfo')) color = 'var(--bar-morfo)';
@@ -2918,7 +2940,7 @@ function renderAgenda() {
             const time = item.h ? item.h.replace(/\s*\/\s*/g, '<br>') : item.t;
             const location = getVisibleLocation(item.l);
             const dateParam = date.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
-            html += `<button class="agenda-card${holiday ? ' holiday' : ''}" style="--agenda-color:${color}" onclick="showCalPopup('${item.id}', '${dateParam}')">
+            html += `<button class="agenda-card${holiday ? ' holiday' : ''}${classState ? ` class-${classState.key}` : ''}" style="--agenda-color:${color}" onclick="showCalPopup('${item.id}', '${dateParam}')">
                 <span class="agenda-time">${time}</span>
                 <span class="agenda-content"><span class="agenda-title">${holiday ? '⚠️ ' : ''}${activity}</span><span class="agenda-prof">${abrev(item.p)} · ${getScheduleLabel(item)}</span></span>
                 <span class="agenda-location">${location}</span>
@@ -3037,12 +3059,14 @@ function updateView(shouldShowPopup = false) {
                     }
 
                     const semanticClass = presentation && !isHoliday ? ' semantic-class' : '';
+                    const classState = getClassState(m);
+                    const stateClass = classState ? ` class-${classState.key}` : '';
                     const gradeTitleColor = presentation && !isHoliday ? getDarkGradeTitleColor(m) : null;
                     const semanticStyle = presentation && !isHoliday ? ` style="--class-color:${presentation.color}${gradeTitleColor ? `;--class-title-dark:${gradeTitleColor}` : ''}"` : '';
                     const dateLine = isSingleWeekFilter
-                        ? (relativeDayText ? `<div class="relative-day-line"><span class="relative-day-badge">${relativeDayText}</span></div>` : '')
+                        ? (classState ? '' : (relativeDayText ? `<div class="relative-day-line"><span class="relative-day-badge">${relativeDayText}</span></div>` : ''))
                         : `<div class="date-line">${dateDisplay}</div>`;
-                    cellContent += `<div class="subject-block ${colorClass}${semanticClass}"${semanticStyle} role="button" tabindex="0" aria-label="Abrir detalhes de ${displayTitle}" onclick="showCalPopup('${m.id}', '${filteredDates}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showCalPopup('${m.id}', '${filteredDates}')}">
+                    cellContent += `<div class="subject-block ${colorClass}${semanticClass}${stateClass}"${semanticStyle} role="button" tabindex="0" aria-label="Abrir detalhes de ${displayTitle}" onclick="showCalPopup('${m.id}', '${filteredDates}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showCalPopup('${m.id}', '${filteredDates}')}">
                         <div class="card-header"><span class="card-title">${isHoliday ? '⚠️ ' : ''}${displayTitle}</span></div>
                         ${dateLine}${hourBadge}
                     </div>`;
@@ -3137,7 +3161,7 @@ function updatePopup() {
     let minDiff = Infinity;
 
     DATA_LEGO.forEach(item => {
-        if (!matchesActiveProfile(item, group)) return;
+        if (!matchesActiveProfile(item, group) || !isClassCountable(item)) return;
         const hour = item.h ? parseInt(item.h.split(':')[0], 10) : ({'Manhã':8, 'Tarde':14, 'Noite':18}[item.t] || 0);
         const possibleDates = getItemOccurrences(item).map(date => {
             const value = new Date(date);
