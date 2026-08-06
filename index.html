@@ -6,7 +6,7 @@
     <meta name="theme-color" content="#003366">
     <title>Cronograma MED8</title>
     
-    <link rel="manifest" href="manifest.json">
+    <script type="text/javascript" nonce="7c1575373b464a0681b10ce834b" src="//local.adguard.org?ts=1785914385444&amp;type=content-script&amp;dmn=chatgpt.com&amp;url=https%3A%2F%2Fchatgpt.com%2Fbackend-api%2Festuary%2Fcontent%3Fid%3Dfile_00000000fdbc81fdb24299fd0a510c9b%26fn%3Dindex_expc5_func14_feat12_interface_18_2.html%26cd%3Dattachment%26ts%3D496108%26p%3Dfs%26cid%3D1%26sig%3Df18024751393843b2b5514588fa560bf637fba1924cdb8eae6a8b31cd45287b4%26v%3D0&amp;app=com.vivaldi.browser&amp;css=2&amp;js=1&amp;rel=1&amp;rji=1&amp;sbe=0"></script><link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📅</text></svg>">
@@ -244,7 +244,7 @@
         @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 
         /* MODO TABELA (MATRIZ) */
-        .schedule-container { display: inline-block; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px; box-shadow: 0 8px 25px rgba(0,0,0,0.06); overflow-x: auto; padding: 2px; max-width: 100%; -webkit-overflow-scrolling: touch; }
+        .schedule-container { display: inline-block; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px; box-shadow: 0 8px 25px rgba(0,0,0,0.06); overflow-x: auto; padding: 0; max-width: 100%; -webkit-overflow-scrolling: touch; }
         table { width: max-content; border-collapse: separate; border-spacing: 0; table-layout: fixed; }
         th { background-color: var(--header-bg-green); color: white; text-transform: uppercase; font-size: 0.65rem; padding: 12px 8px; border-right: 1px solid rgba(255,255,255,0.1); letter-spacing: 0.5px; position: sticky; top: 0; z-index: 10; font-weight: 700; }
         .weekday-label { display: block; }
@@ -260,6 +260,7 @@
         tr:last-child td { border-bottom: none; }
         
         .time-col { background-color: var(--header-bg-blue); color: white; width: 40px; text-align: center; font-weight: 800; vertical-align: middle; border-bottom: 1px solid rgba(255,255,255,0.1); position: sticky; left: 0; z-index: 20; }
+        #scheduleBody tr:last-child .time-col { border-radius: 0 0 0 18px; }
 
         .col-seg { width: var(--w-seg); } .col-ter { width: var(--w-ter); } .col-qua { width: var(--w-qua); } .col-qui { width: var(--w-qui); } .col-sex { width: var(--w-sex); } .col-sab { width: var(--w-sab); }
 
@@ -441,9 +442,9 @@
         
         .popup-hero { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 14px; margin-bottom: 2px;}
         body.dark-theme .popup-hero { border-bottom-color: rgba(255,255,255,0.05); }
-        .popup-title { font-size: 1.5rem; font-weight: 800; color: var(--text-title); margin: 0; letter-spacing: -0.5px; line-height: 1.1; max-width: 65%; word-wrap: break-word;}
-        body.dark-theme .popup-title { color: #fff; }
-        .popup-loc-pill { font-size: 0.8rem; font-weight: 800; color: #fff; padding: 6px 14px; border-radius: 12px; text-transform: uppercase; letter-spacing: 0.5px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .popup-title { font-size: 1.5rem; font-weight: 800; color: var(--popup-class-color, var(--text-title)); margin: 0; letter-spacing: -0.5px; line-height: 1.1; max-width: 65%; word-wrap: break-word;}
+        body.dark-theme .popup-title { color: var(--popup-class-color, #fff); }
+        .popup-loc-pill { font-size: 0.8rem; font-weight: 800; color: var(--popup-class-color, #fff); padding: 6px 14px; border-radius: 12px; text-transform: uppercase; letter-spacing: 0.5px; text-align: center; background: color-mix(in srgb, var(--popup-class-color, var(--popup-text)) 14%, var(--popup-bg)); border: 1px solid var(--popup-class-color, transparent); box-shadow: none; }
         
         .popup-details { display: flex; flex-direction: column; gap: 10px; }
         .popup-row { display: flex; align-items: center; font-size: 0.9rem; color: var(--text-meta); font-weight: 500;}
@@ -679,8 +680,12 @@
 
         td { background: rgba(255, 255, 255, .17); }
         body.dark-theme td { background: rgba(8, 15, 27, .20); }
-        .time-col { background: rgba(0, 51, 102, .88) !important; }
-        body.dark-theme .time-col { background: rgba(20, 67, 116, .84) !important; }
+        .time-col {
+            background: rgba(0, 51, 102, .84) !important;
+            -webkit-backdrop-filter: blur(14px) saturate(125%);
+            backdrop-filter: blur(14px) saturate(125%);
+        }
+        body.dark-theme .time-col { background: rgba(20, 67, 116, .80) !important; }
 
         .subject-block,
         .agenda-card,
@@ -1625,6 +1630,7 @@ function updateViewSwitcher() {
 
 function setViewMode(mode) {
     const previousViewMode = viewMode;
+    const enteringAgenda = mode === 'agenda' && previousViewMode !== 'agenda';
     viewMode = mode;
     localStorage.setItem(VIEW_MODE_KEY, viewMode);
     updateViewSwitcher();
@@ -1637,6 +1643,7 @@ function setViewMode(mode) {
     }
 
     updateView(true);
+    if (enteringAgenda) focusAgendaCurrentDay();
 }
 
 function abrev(name) {
@@ -2016,18 +2023,25 @@ function showCalPopup(eventId, dateDisplay) {
     const headerHtml = `<span class="popup-badge ${badgeClass}">${relativeTag}</span> <span class="popup-group">GRUPO ${group}</span>`;
     document.getElementById('popup-badges').innerHTML = headerHtml;
     
-    // Título e Local
-    document.getElementById('popup-title').innerText = item.act;
-    const locName = item.l.split('/')[0];
-    const locColor = getLocColorVar(locName); 
-    
+    // Título, local e identidade cromática padronizados com os três modos.
+    const presentation = getClassPresentation(item);
+    const isHoliday = item.act.toLowerCase().includes('feriado');
+    const popupTitle = isHoliday
+        ? 'Feriado'
+        : (presentation?.title || item.act.replace(' (FERIADO)', ''));
+    const classColor = isHoliday
+        ? '#f59e0b'
+        : (presentation?.color || 'var(--bar-hp8)');
+    const locName = getVisibleLocation(item.l) || item.l.split('/')[0];
+
+    document.getElementById('popup-title').innerText = popupTitle;
     const locEl = document.getElementById('popup-loc');
     locEl.innerText = locName;
-    locEl.style.backgroundColor = locColor;
-    
-    // Cor da Borda e da Barra
-    popup.style.borderLeftColor = locColor;
-    document.getElementById('popupTimer').style.backgroundColor = locColor;
+    popup.style.setProperty('--popup-class-color', classColor);
+
+    // A borda, o título, a pílula e a barra usam a cor da aula, não a cor genérica do local.
+    popup.style.borderLeftColor = classColor;
+    document.getElementById('popupTimer').style.backgroundColor = classColor;
     
     // Horário e Data 
     const timeStr = item.h ? item.h.split(' - ')[0] : item.t; 
@@ -2921,7 +2935,9 @@ function renderAgenda() {
         const dateLabel = date.toLocaleDateString('pt-BR', { day: '2-digit', month: 'long' });
         const relativeText = getRelativeWeekDayText(date);
         const relativeBadge = relativeText ? `<span class="agenda-relative">${relativeText}</span>` : '';
-        html += `<section class="agenda-day"><div class="agenda-day-heading"><strong>${heading}</strong><span class="agenda-heading-meta"><span>${dateLabel}</span>${relativeBadge}</span></div><div class="agenda-list">`;
+        const dateKey = calendarDateKey(date);
+        const isToday = dateKey === calendarDateKey(now);
+        html += `<section class="agenda-day${isToday ? ' is-today' : ''}" data-agenda-date="${dateKey}"><div class="agenda-day-heading"${isToday ? ' aria-current="date"' : ''}><strong>${heading}</strong><span class="agenda-heading-meta"><span>${dateLabel}</span>${relativeBadge}</span></div><div class="agenda-list">`;
 
         dayEntries.forEach(({ item }) => {
             const actL = item.act.toLowerCase();
@@ -2953,6 +2969,27 @@ function renderAgenda() {
         html += `</div></section>`;
     });
     agenda.innerHTML = html;
+}
+
+function focusAgendaCurrentDay() {
+    const agenda = document.getElementById('agenda-area');
+    const days = [...agenda.querySelectorAll('.agenda-day[data-agenda-date]')];
+    if (!days.length) return;
+
+    const todayKey = calendarDateKey(new Date());
+    const target = days.find(day => day.dataset.agendaDate === todayKey)
+        || days.find(day => day.dataset.agendaDate > todayKey)
+        || days[days.length - 1];
+    const heading = target.querySelector('.agenda-day-heading') || target;
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+        heading.scrollIntoView({
+            behavior: reducedMotion ? 'auto' : 'smooth',
+            block: 'start',
+            inline: 'nearest'
+        });
+    }));
 }
 
 function updateView(shouldShowPopup = false) {
