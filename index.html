@@ -6,7 +6,7 @@
     <meta name="theme-color" content="#003366">
     <title>Cronograma MED8</title>
     
-    <script type="text/javascript" nonce="7c1575373b464a0681b10ce834b" src="//local.adguard.org?ts=1786000811065&amp;type=content-script&amp;dmn=chatgpt.com&amp;url=https%3A%2F%2Fchatgpt.com%2Fbackend-api%2Festuary%2Fcontent%3Fid%3Dfile_0000000026a481fda636745618801e27%26fn%3Dindex_expc5_func14_feat12_interface_20.html%26cd%3Dattachment%26ts%3D496119%26p%3Dfs%26cid%3D1%26sig%3D40236340d8ad24e58fe41ed4dbb43fbbe3a710872b1e4f597f15b8273cd513f6%26v%3D0&amp;app=net.quetta.browser&amp;css=2&amp;js=1&amp;rel=1&amp;rji=1&amp;sbe=0"></script><link rel="manifest" href="manifest.json">
+    <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📅</text></svg>">
@@ -16,6 +16,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" onerror="console.log('Modo Offline: Print desativado');"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" onerror="console.log('Modo Offline: PDF desativado');"></script>
     
     <style>
         * { box-sizing: border-box; }
@@ -67,6 +68,8 @@
             --c-hms-david: var(--c-prof-david);
             --c-giesc-david: var(--c-prof-david);
             --c-uepa-ortop: var(--c-prof-david);
+            --c-avaliacao-neuro: #b45309;
+            --c-osce-neuro: #9333a8;
 
             /* Pills (Cores dos Locais) */
             --c-hms: #ef6c00; --c-uepa: #00897b; --c-hrba: #283593; 
@@ -121,6 +124,8 @@
             --c-prof-marcos: #73a7ff;
             --c-prof-alexandre: #ffd05a;
             --c-prof-david: #7dd66a;
+            --c-avaliacao-neuro: #e5a43b;
+            --c-osce-neuro: #d98be8;
             --c-hms: #ffb74d; --c-uepa: #64ffda; --c-hrba: #448aff; 
             --c-ures: #ff80ab; --c-ubs: #b2ff59; --c-amb: #84ffff;
 
@@ -307,6 +312,16 @@
         .subject-block::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 6px; background: var(--bar-color); border-radius: 12px 0 0 12px; }
         .subject-block.holiday { background: linear-gradient(135deg, #fff8e1, #ffecb3) !important; --bar-color: #f59e0b; }
         body.dark-theme .subject-block.holiday { background: linear-gradient(135deg, #3b2b12, #2b1f0c) !important; }
+        /* Eventos acadêmicos: contorno tracejado + listras, sem marcadores internos. */
+        .subject-block.special-event { padding:6px 7px 5px; border:1px dashed var(--event-color); border-radius:9px; background:repeating-linear-gradient(135deg,color-mix(in srgb,var(--event-color) 10%,var(--card-bg)) 0 7px,color-mix(in srgb,var(--event-color) 4%,var(--card-bg)) 7px 14px) !important; box-shadow:none; overflow:hidden; }
+        .subject-block.special-event::before { display:none; }
+        .subject-block.special-event .card-header { display:block; margin:0; }
+        .subject-block.special-event .card-title { display:block; margin:0; font-size:.78rem; line-height:1.02; }
+        .subject-block.special-event .date-line { margin-top:2px; font-size:.57rem; line-height:1.1; }
+        .subject-block.event-holiday { --event-color:#d18a00; }
+        .subject-block.event-evaluation { --event-color:var(--c-avaliacao-neuro); }
+        .subject-block.event-osce { --event-color:var(--c-osce-neuro); border-style:solid; }
+        body.dark-theme .subject-block.special-event { background:repeating-linear-gradient(135deg,color-mix(in srgb,var(--event-color) 9%,var(--card-bg)) 0 7px,color-mix(in srgb,var(--event-color) 3%,var(--card-bg)) 7px 14px) !important; border-color:color-mix(in srgb,var(--event-color) 72%,#94a3b8); }
         .holiday-badge { display: inline-flex; align-items: center; padding: 2px 6px; border-radius: 8px; background: #b45309; color: #fff; font-size: 0.5rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.4px; }
 
         .giesc { background: var(--bg-giesc) !important; --bar-color: var(--bar-giesc); }
@@ -315,6 +330,8 @@
         .morfo { background: var(--bg-morfo) !important; --bar-color: var(--bar-morfo); }
         .subject-block.semantic-class:not(.holiday) { background: color-mix(in srgb, var(--class-color) 10%, var(--card-bg)) !important; --bar-color: var(--class-color); }
         body.dark-theme .subject-block.semantic-class:not(.holiday) { background: color-mix(in srgb, var(--class-color) 14%, var(--card-bg)) !important; border-color: color-mix(in srgb, var(--class-color) 30%, transparent); }
+        .subject-block.semantic-class.special-event:not(.holiday) { background:repeating-linear-gradient(135deg,color-mix(in srgb,var(--event-color) 10%,var(--card-bg)) 0 7px,color-mix(in srgb,var(--event-color) 4%,var(--card-bg)) 7px 14px) !important; border-color:var(--event-color); }
+        body.dark-theme .subject-block.semantic-class.special-event:not(.holiday) { background:repeating-linear-gradient(135deg,color-mix(in srgb,var(--event-color) 9%,var(--card-bg)) 0 7px,color-mix(in srgb,var(--event-color) 3%,var(--card-bg)) 7px 14px) !important; border-color:color-mix(in srgb,var(--event-color) 72%,#94a3b8); }
         .subject-block.semantic-class:not(.holiday) .pill { background: color-mix(in srgb, var(--class-color) 14%, var(--card-bg)) !important; color: var(--class-color); border-color: var(--class-color); box-shadow: none; }
         body.dark-theme .subject-block.semantic-class:not(.holiday) .pill { background: color-mix(in srgb, var(--class-color) 10%, transparent) !important; color: var(--class-color); border-color: var(--class-color); }
         .subject-block.holiday .pill { background: color-mix(in srgb, #f59e0b 14%, var(--card-bg)) !important; color: #b45309; border-color: #f59e0b; box-shadow: none; }
@@ -447,6 +464,14 @@
         .popup-loc-pill { font-size: 0.8rem; font-weight: 800; color: var(--popup-class-color, #fff); padding: 6px 14px; border-radius: 12px; text-transform: uppercase; letter-spacing: 0.5px; text-align: center; background: color-mix(in srgb, var(--popup-class-color, var(--popup-text)) 14%, var(--popup-bg)); border: 1px solid var(--popup-class-color, transparent); box-shadow: none; }
         
         .popup-details { display: flex; flex-direction: column; gap: 10px; }
+        .popup-topic-row { align-items: flex-start; padding: 9px 11px; border-radius: 12px; background: color-mix(in srgb, var(--popup-class-color, var(--primary)) 9%, transparent); border: 1px solid color-mix(in srgb, var(--popup-class-color, var(--primary)) 20%, transparent); }
+        .popup-topic-row[hidden] { display: none !important; }
+        .popup-topic-text { width: 100%; max-height: 178px; overflow-y: auto; line-height: 1.35; font-weight: 720; color: var(--text-main); scrollbar-width: thin; }
+        .popup-topic-list { display: grid; gap: 7px; }
+        .popup-topic-item { display: grid; grid-template-columns: auto minmax(0,1fr); align-items: start; gap: 9px; padding: 7px 8px; border-radius: 9px; background: color-mix(in srgb, var(--popup-bg) 72%, transparent); }
+        .popup-topic-date { min-width: 45px; padding: 3px 6px; border-radius: 7px; color: var(--popup-class-color, var(--primary)); background: color-mix(in srgb, var(--popup-class-color, var(--primary)) 13%, transparent); font-size: .68rem; font-weight: 850; text-align: center; }
+        .popup-topic-body { min-width: 0; font-size: .78rem; line-height: 1.35; }
+        .popup-topic-meta { display: block; margin-top: 2px; color: var(--text-meta); font-size: .64rem; font-weight: 620; }
         .popup-row { display: flex; align-items: center; font-size: 0.9rem; color: var(--text-meta); font-weight: 500;}
         body.dark-theme .popup-row { color: #cfd8dc; }
         .popup-row b { color: var(--text-title); font-weight: 700; margin-right: 4px; }
@@ -851,6 +876,46 @@
             .micro-card:hover { transform: none; }
         }
 
+        /* Correção 8: canvas A3 proporcional, largo o suficiente para todas as datas. */
+        .rotation-export-sheet {
+            position: fixed; left: -100000px; top: 0; z-index: -1;
+            width: 1900px; min-width: 1900px; min-height: 1344px;
+            padding: 45px 45px 59px; box-sizing: border-box; overflow: visible;
+            background: #fff !important; color: #151515 !important;
+            font-family: Arial, Helvetica, sans-serif; color-scheme: light;
+            -webkit-print-color-adjust: exact; print-color-adjust: exact;
+        }
+        .rotation-export-sheet.exporting { z-index: 9999; }
+        .rotation-export-sheet *, .rotation-export-heading,
+        .rotation-export-table th, .rotation-export-table td {
+            color: #151515 !important; text-shadow: none !important; opacity: 1 !important;
+        }
+        .rotation-export-section { margin: 0 0 48px; break-inside: avoid; }
+        .rotation-master-heading { margin: 0 0 20px; padding: 0 4px 13px; border-bottom: 4px solid #151515; font-size: 39px; line-height: 1.1; font-weight: 900; text-transform: uppercase; }
+        .rotation-export-heading { margin: 0 0 15px 7px; font-size: 35px; line-height: 1.12; font-weight: 850; text-transform: uppercase; }
+        .rotation-export-block { margin: 0 0 29px; break-inside: avoid; }
+        .rotation-export-table { width: 100%; table-layout: fixed; border-collapse: collapse; border: 2.5px solid #111; font-size: 29px; }
+        .rotation-export-table th, .rotation-export-table td { height: 61px; padding: 6px 7px; border: 1.7px solid #111; text-align: center; vertical-align: middle; box-sizing: border-box; }
+        .rotation-export-table .rotation-caption { height: auto; min-height: 78px; padding: 10px 15px 11px; line-height: 1.2; text-transform: uppercase; }
+        .rotation-caption-main { display: block; font-size: 27px; font-weight: 850; letter-spacing: .01em; }
+        .rotation-caption-meta { display: block; margin-top: 4px; font-size: 22px; font-weight: 700; }
+        .rotation-export-table .rotation-turn { width: 108px; font-size: 26px; font-weight: 850; text-transform: uppercase; }
+        .rotation-export-table .rotation-corner { width: 108px; }
+        .rotation-export-table .rotation-date { font-size: 31px; font-weight: 750; white-space: nowrap; }
+        .rotation-export-table .rotation-group { font-size: 33px; font-weight: 850; }
+        .rotation-export-table .rotation-holiday { color: #d40000 !important; font-size: 22px; font-weight: 900; }
+        .rotation-export-block.tone-giesc, .rotation-export-block.tone-wesley { --rotation-bg:#cfe2f3; --rotation-caption:#b9cbd9; --rotation-date-bg:#dae9f5; }
+        .rotation-export-block.tone-david { --rotation-bg:#d9ead3; --rotation-caption:#c3d3be; --rotation-date-bg:#e5f0e1; }
+        .rotation-export-block.tone-marcos { --rotation-bg:#ffe599; --rotation-caption:#e6ce8a; --rotation-date-bg:#ffedb8; }
+        .rotation-export-block.tone-kalysta { --rotation-bg:#ea99e8; --rotation-caption:#d28ad0; --rotation-date-bg:#f0b2ee; }
+        .rotation-export-block.tone-default { --rotation-bg:#d9e2f3; --rotation-caption:#c3cbdc; --rotation-date-bg:#e5ebf6; }
+        .rotation-export-block .rotation-export-table th,
+        .rotation-export-block .rotation-export-table td { background: var(--rotation-bg) !important; }
+        .rotation-export-block .rotation-export-table .rotation-caption { background: var(--rotation-caption) !important; }
+        .rotation-export-block .rotation-export-table .rotation-date,
+        .rotation-export-block .rotation-export-table .rotation-corner { background: var(--rotation-date-bg) !important; }
+        .dev-export-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 7px; }
+
         /* CORREÇÕES 1 — continuidade do fundo e badges da Grade */
         body {
             min-height: 100dvh;
@@ -887,6 +952,12 @@
             padding: 1px 3px;
             font-size: .32rem;
         }
+        body.panoramic-mode .subject-block.special-event { padding:3px 3px 3px; border-radius:4px; background:repeating-linear-gradient(135deg,color-mix(in srgb,var(--event-color) 9%,var(--card-bg)) 0 4px,color-mix(in srgb,var(--event-color) 3%,var(--card-bg)) 4px 8px) !important; }
+        body.panoramic-mode .subject-block.special-event .card-header { margin:0; }
+        body.panoramic-mode .subject-block.special-event .card-title { font-size:0; line-height:1; }
+        body.panoramic-mode .subject-block.special-event .card-title::after { content:attr(data-compact-title); font-size:.43rem; line-height:1; }
+        body.panoramic-mode .subject-block.special-event .date-line { margin-top:1px; font-size:.36rem; line-height:1; }
+        body.dark-theme.panoramic-mode .subject-block.special-event { background:repeating-linear-gradient(135deg,color-mix(in srgb,var(--event-color) 8%,var(--card-bg)) 0 4px,color-mix(in srgb,var(--event-color) 2%,var(--card-bg)) 4px 8px) !important; }
 
         /* CORREÇÕES 2 — trocas de tema e layout com baixo custo */
         body.theme-switching,
@@ -1226,6 +1297,10 @@
         </div>
 
         <div class="popup-details">
+            <div class="popup-row popup-topic-row" id="popup-topic-row" hidden>
+                <span class="popup-icon">📚</span>
+                <span class="popup-topic-text" id="popup-topic">...</span>
+            </div>
             <div class="popup-row">
                 <span class="popup-icon">⏰</span>
                 <span id="popup-time">...</span>
@@ -1313,16 +1388,23 @@
         </div>
         <div class="dev-settings">
             <label class="dev-setting-row"><span><strong>Blur em Mais opções</strong><span>Desfoca a interface enquanto o menu está aberto.</span></span><input id="developerBlurToggle" class="stats-switch" type="checkbox" onchange="setOptionsBlur(this.checked)"></label>
+            <section class="dev-csv-box" aria-labelledby="sourceRegistryTitle">
+                <div class="dev-csv-head"><div><strong id="sourceRegistryTitle">Planilha-ponte</strong><span>Cole uma única vez o CSV publicado da lista de fontes. O cronograma usa a linha ativa de maior ordem.</span></div><span id="sourceRegistryState" class="dev-csv-state">Padrão</span></div>
+                <input id="sourceRegistryInput" class="dev-csv-input" type="url" inputmode="url" spellcheck="false" placeholder="https://docs.google.com/spreadsheets/d/e/.../output=csv">
+                <div class="dev-csv-actions"><button class="dev-csv-action" type="button" onclick="restoreDefaultSourceRegistry()">Usar fonte padrão</button><button class="dev-csv-action primary" type="button" onclick="applySourceRegistry()">Aplicar ponte</button></div>
+            </section>
             <section class="dev-csv-box" aria-labelledby="customCsvTitle">
                 <div class="dev-csv-head"><div><strong id="customCsvTitle">Usar CSV personalizado</strong><span>Cole o conteúdo completo do CSV. Quando aplicado, ele substitui a fonte padrão somente neste dispositivo.</span></div><span id="customCsvState" class="dev-csv-state">Padrão</span></div>
                 <textarea id="customCsvInput" class="dev-csv-input" spellcheck="false" placeholder="Atividade,Dia,Turno,Professor,Horário,Local,..."></textarea>
                 <div class="dev-csv-actions"><button class="dev-csv-action" type="button" onclick="restoreDefaultCsv()">Usar padrão</button><button class="dev-csv-action primary" type="button" onclick="applyCustomCsv()">Aplicar CSV</button></div>
             </section>
+            <div class="dev-setting-row"><span><strong>Exportar horários de HP e GIESC</strong><span>Gera os quadros com os dados atuais em PNG, PDF vetorial ou página HTML independente.</span></span><div class="dev-export-actions"><button id="btnRotationExport" class="dev-action" type="button" onclick="exportHpGiescSchedules()">PNG</button><button id="btnRotationPdf" class="dev-action" type="button" onclick="exportHpGiescPdf()">PDF</button><button id="btnRotationHtml" class="dev-action" type="button" onclick="exportHpGiescHtml()">HTML</button></div></div>
             <div class="dev-setting-row"><span><strong>Ocultar Estatísticas</strong><span>Bloqueia novamente o easter egg de MED8.</span></span><button class="dev-action" type="button" onclick="resetStatsEasterEgg()">Ocultar</button></div>
             <div class="dev-setting-row"><span><strong>Ocultar modo desenvolvedor</strong><span>Bloqueia novamente o easter egg do rodapé.</span></span><button class="dev-action" type="button" onclick="resetDeveloperEasterEgg()">Ocultar</button></div>
         </div>
     </div>
 </div>
+<div id="rotationExportSheet" class="rotation-export-sheet" aria-hidden="true"></div>
 <div id="statsUnlockToast" class="stats-unlock-toast">✨ Modo estatísticas desbloqueado</div>
 <div id="developerUnlockToast" class="stats-unlock-toast">🛠️ Modo desenvolvedor desbloqueado</div>
 
@@ -1336,9 +1418,12 @@ const ANO_LETIVO = 2026;
 const SEMESTRE = "2026.2";
 const START_DATE = new Date(2026, 7, 3);
 const END_DATE = new Date(2026, 11, 19, 23, 59, 59);
-const CACHE_KEY = "med8_csv_cache_2026_2_interface4";
-const CACHE_TIME_KEY = "med8_csv_cache_time_2026_2_interface4";
+const CACHE_KEY = "med8_csv_cache_2026_2_polimento17";
+const CACHE_TIME_KEY = "med8_csv_cache_time_2026_2_polimento17";
 const CUSTOM_CSV_KEY = "med8_custom_csv_2026_2_v1";
+const SOURCE_REGISTRY_KEY = "med8_source_registry_2026_2_v1";
+const LAST_RESOLVED_DATA_URL_KEY = "med8_last_resolved_data_url_2026_2_v1";
+const DEFAULT_SOURCE_REGISTRY_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQaebiNUjbTyKt673U_Zn9jLau2hf0j2j3gM-8aU_IpH3ILLHSKafCgAAIjrYEmWehFXDrfJCHjiTmb/pub?gid=300469075&single=true&output=csv";
 const CUSTOM_CSV_ENABLED_KEY = "med8_custom_csv_enabled_2026_2_v1";
 const GROUP_STORAGE_KEY = "medGroup_2026_2_v2";
 const HP_MODE_STORAGE_KEY = "medHpModeByGroup_2026_2_v2";
@@ -1430,6 +1515,209 @@ function parseCSV(str) {
     return arr;
 }
 
+const OFFICIAL_CLASS_DETAILS = {
+    'hrba-aud': {
+        '04/08': 'Anemias',
+        '11/08': 'Coagulopatias',
+        '18/08': 'Carcinogênese'
+    },
+    'conf-neuro': {
+        '05/08': 'O que a neuroanatomia tem a ver com nossa vida — revisão',
+        '06/08': 'Exame neurológico II',
+        '13/08': 'Síndromes neurológicas',
+        '20/08': 'Exames complementares em neurologia',
+        '27/08': 'Epilepsias I — classificação das crises e diagnóstico',
+        '03/09': 'Epilepsias II — síndromes epilépticas e tratamento',
+        '10/09': 'Demências',
+        '17/09': 'DNPM, deficiência intelectual e paralisia cerebral',
+        '24/09': 'Doença cerebrovascular I — diagnóstico',
+        '01/10': 'Doença cerebrovascular II — tratamento',
+        '05/10': 'Traumatismo cranioencefálico',
+        '08/10': 'Transtorno do espectro autista',
+        '22/10': 'Cefaleias',
+        '29/10': 'Meningites e encefalites',
+        '05/11': 'Doenças neuromusculares',
+        '03/12': 'Avaliação somativa',
+        '17/12': 'Avaliação final'
+    },
+    'amb-neuro': {
+        '06/08': 'Exame neurológico I',
+        '13/08': 'Exame neurológico — 1º grupo (B/C, 12 alunos)',
+        '20/08': 'Exame neurológico — 2º grupo (A/D, 11 alunos)',
+        '27/08': 'Atendimento ambulatorial', '03/09': 'Atendimento ambulatorial',
+        '10/09': 'Atendimento ambulatorial', '17/09': 'Atendimento ambulatorial',
+        '24/09': 'Atendimento ambulatorial', '01/10': 'Atendimento ambulatorial',
+        '22/10': 'Atendimento ambulatorial', '29/10': 'Atendimento ambulatorial',
+        '05/11': 'Atendimento ambulatorial', '11/11': 'Atendimento ambulatorial',
+        '19/11': 'Atendimento ambulatorial', '26/11': 'Atendimento ambulatorial',
+        '03/12': 'Atendimento ambulatorial'
+    },
+    'hms-neuro': {
+        '06/08': 'Discussão de casos — rodízio hospitalar', '13/08': 'Discussão de casos — rodízio hospitalar',
+        '20/08': 'Discussão de casos — rodízio hospitalar', '27/08': 'Discussão de casos — rodízio hospitalar',
+        '03/09': 'Discussão de casos — rodízio hospitalar', '10/09': 'Discussão de casos — rodízio hospitalar',
+        '17/09': 'Discussão de casos — rodízio hospitalar', '24/09': 'Discussão de casos — rodízio hospitalar',
+        '01/10': 'Discussão de casos — rodízio hospitalar', '22/10': 'Discussão de casos — rodízio hospitalar',
+        '29/10': 'Discussão de casos — rodízio hospitalar', '05/11': 'Discussão de casos — rodízio hospitalar',
+        '12/11': 'Discussão de casos — rodízio hospitalar', '19/11': 'Discussão de casos — rodízio hospitalar',
+        '26/11': 'Discussão de casos — rodízio hospitalar', '03/12': 'Discussão de casos — rodízio hospitalar'
+    },
+    'avaliacao-neuro': { '03/12': 'Avaliação somativa', '17/12': 'Avaliação final' },
+    'osce-neuro': { '10/12': 'OSCE' }
+};
+
+function parseDetailMap(value) {
+    if (!value || value.trim() === '-' || value.trim() === '') return {};
+    try {
+        const parsed = JSON.parse(value);
+        return parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed : {};
+    } catch (_) {
+        return {};
+    }
+}
+
+function getClassFamily(item) {
+    const activity = String(item.act || '').toUpperCase();
+    const professor = String(item.p || '').toUpperCase();
+    const location = String(item.l || '').toUpperCase();
+
+    if (activity.startsWith('HP-8') && professor.includes('KALYSTA') &&
+        (location.includes('AUD HRBA') || /^HP-8\s*-\s*(ANEMIAS|COAGULOPATIAS|CARCINOGÊNESE)$/i.test(item.act.trim()))) {
+        return 'hrba-aud';
+    }
+    if (activity.startsWith('HP-8') && professor.includes('MARCOS HONORATO')) {
+        if (activity.includes('OSCE') || (item.t === 'Tarde' && location.includes('LABORATÓRIO') && String(item.dates || '').includes('10/12'))) return 'osce-neuro';
+        if (activity.includes('AVALIAÇÃO')) return 'avaliacao-neuro';
+        if (location.includes('HMS') || activity.includes('DISCUSSÃO DE CASOS')) return 'hms-neuro';
+        if (activity.includes('AMBULATÓRIO') || activity.includes('EXAME NEUROLÓGICO (') || (item.t === 'Manhã' && location.includes('LABORATÓRIO'))) return 'amb-neuro';
+        return 'conf-neuro';
+    }
+    return '';
+}
+
+function splitSpecialNeuroEvents(items) {
+    const result = [];
+    items.forEach(item => {
+        const family = item.classFamily || getClassFamily(item);
+        if (family === 'osce-neuro') { result.push({ ...item, classFamily:'osce-neuro' }); return; }
+        if (family !== 'conf-neuro') { result.push(item); return; }
+        const dates = String(item.dates || '').split(',').map(v => v.trim()).filter(Boolean);
+        const evaluationDates = dates.filter(date => date === '03/12' || date === '17/12');
+        const regularDates = dates.filter(date => !evaluationDates.includes(date));
+        if (regularDates.length) result.push({ ...item, dates:regularDates.join(', ') });
+        evaluationDates.forEach(date => result.push({ ...item, id:item.id + '_eval_' + date.replace('/',''), dates:date, act:'HP-8 - AVALIAÇÃO', classFamily:'avaliacao-neuro', detailMap:{ [date]: OFFICIAL_CLASS_DETAILS['avaliacao-neuro'][date] }, occurrenceMeta:item.occurrenceMeta?.[date] ? { [date]:item.occurrenceMeta[date] } : {} }));
+    });
+    return result;
+}
+
+function inferTopicFromActivity(item) {
+    const topic = String(item.act || '').match(/^HP-8\s*-\s*(.+)$/i)?.[1]?.trim();
+    if (!topic || /^(AMBULATÓRIO|DISCUSSÃO DE CASOS|EXAME NEUROLÓGICO \([12]º GRUPO\))$/i.test(topic)) return '';
+    return topic.toLocaleLowerCase('pt-BR').replace(/(^|[\s/—:-])\p{L}/gu, letter => letter.toLocaleUpperCase('pt-BR'));
+}
+
+function enrichDetailMap(item) {
+    const details = { ...(item.detailMap || {}) };
+    const occurrenceMeta = { ...(item.occurrenceMeta || {}) };
+    const family = getClassFamily(item);
+    const official = OFFICIAL_CLASS_DETAILS[family] || {};
+    const inferred = inferTopicFromActivity(item);
+    String(item.dates || '').split(',').map(value => value.trim()).filter(value => /^\d{2}\/\d{2}$/.test(value)).forEach(date => {
+        if (!details[date]) details[date] = inferred || official[date] || '';
+        if (!occurrenceMeta[date]) occurrenceMeta[date] = { h:item.h || '', l:item.l || '', d:item.d || '', t:item.t || '' };
+    });
+    return { ...item, detailMap: details, occurrenceMeta, classFamily: family };
+}
+
+function consolidateThemedItems(items) {
+    const consolidated = new Map();
+    const passthrough = [];
+
+    items.map(enrichDetailMap).forEach(item => {
+        if (!item.classFamily || item.dates === 'Semanal') {
+            passthrough.push(item);
+            return;
+        }
+        const mergeVariableTimes = item.classFamily === 'conf-neuro';
+        const key = [item.classFamily, item.g, item.d, item.t, item.p, mergeVariableTimes ? '' : (item.h || ''), item.l].join('|');
+        if (!consolidated.has(key)) {
+            consolidated.set(key, { ...item, dates: '', detailMap: { ...item.detailMap }, occurrenceMeta: { ...item.occurrenceMeta } });
+        }
+        const target = consolidated.get(key);
+        const dates = new Set([...(target.dates ? target.dates.split(',').map(v => v.trim()) : []), ...item.dates.split(',').map(v => v.trim())].filter(Boolean));
+        target.dates = [...dates].sort((a, b) => parseScheduleDate(a) - parseScheduleDate(b)).join(', ');
+        target.detailMap = { ...target.detailMap, ...item.detailMap };
+        target.occurrenceMeta = { ...target.occurrenceMeta, ...item.occurrenceMeta };
+    });
+
+    return [...passthrough, ...consolidated.values()];
+}
+
+function getOccurrenceDetail(item, dateDisplay) {
+    const dates = [...String(dateDisplay || '').matchAll(/\d{2}\/\d{2}/g)].map(match => match[0]);
+    if (!dates.length) return '';
+    const family = item.classFamily || getClassFamily(item);
+    const fallback = inferTopicFromActivity(item);
+    const details = dates.map(date => ({ date, text: item.detailMap?.[date] || OFFICIAL_CLASS_DETAILS[family]?.[date] || fallback || '' })).filter(entry => entry.text);
+    if (!details.length) return '';
+    if (details.length === 1) return details[0].text;
+    return details.map(entry => `${entry.date} — ${entry.text}`).join(' · ');
+}
+
+function getOccurrenceDetailEntries(item, dateDisplay) {
+    const dates = [...String(dateDisplay || '').matchAll(/\d{2}\/\d{2}/g)].map(match => match[0]);
+    const family = item.classFamily || getClassFamily(item);
+    const fallback = inferTopicFromActivity(item);
+    return dates.map(date => ({
+        date,
+        text: item.detailMap?.[date] || OFFICIAL_CLASS_DETAILS[family]?.[date] || fallback || '',
+        meta: item.occurrenceMeta?.[date] || { h:item.h || '', l:item.l || '', d:item.d || '', t:item.t || '' }
+    })).filter(entry => entry.text);
+}
+
+function getOccurrenceMeta(item, dateDisplay) {
+    const date = String(dateDisplay || '').match(/\d{2}\/\d{2}/)?.[0];
+    return (date && item.occurrenceMeta?.[date]) || { h:item.h || '', l:item.l || '', d:item.d || '', t:item.t || '' };
+}
+
+function escapePopupHtml(value) {
+    return String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+}
+
+function applyOfficialNeuroFallback(items) {
+    const preserved = items.filter(item => String(item.p || '').trim() !== 'Marcos Honorato');
+    const make = (d, t, h, l, g, dates, family) => ({
+        id: 'evt_' + Math.random().toString(36).slice(2, 11), d, t, h, l, g, dates,
+        act: family === 'conf-neuro' ? 'HP-8 / CONF.' : family === 'avaliacao-neuro' ? 'HP-8 - AVALIAÇÃO' : 'HP-8',
+        p: 'Marcos Honorato', detailMap: {}, classFamily: family
+    });
+    const addGroups = (d, t, h, l, family, schedule) => Object.entries(schedule).map(([g, dates]) => make(d, t, h, l, g, dates, family));
+
+    return [...preserved,
+        Object.assign(make('Quinta', 'Manhã', '08:00', 'UEPA', 'Todos', '06/08', 'conf-neuro'), { detailMap:{'06/08':'Exame neurológico I'} }),
+        ...addGroups('Quinta', 'Manhã', '08:00', 'Laboratório de Habilidades', 'amb-neuro', {
+            A:'20/08, 03/09, 17/09, 01/10, 29/10, 26/11',
+            B:'13/08, 27/08, 10/09, 24/09, 22/10, 05/11, 19/11, 03/12',
+            C:'13/08, 27/08, 10/09, 24/09, 22/10, 05/11, 19/11, 03/12',
+            D:'20/08, 03/09, 17/09, 01/10, 29/10, 26/11'
+        }),
+        make('Quarta', 'Manhã', '08:00', 'Laboratório de Habilidades', 'A', '11/11', 'amb-neuro'),
+        make('Quarta', 'Manhã', '08:00', 'Laboratório de Habilidades', 'D', '11/11', 'amb-neuro'),
+        ...addGroups('Quinta', 'Tarde', '14:00', 'HMS', 'hms-neuro', {
+            A:'06/08, 03/09, 01/10, 12/11',
+            B:'13/08, 10/09, 22/10, 19/11',
+            C:'20/08, 17/09, 29/10, 26/11',
+            D:'27/08, 24/09, 05/11, 03/12'
+        }),
+        make('Quinta', 'Noite', '18:00 - 21:00', 'UEPA', 'Todos', '06/08, 13/08, 20/08, 27/08, 10/09, 17/09, 24/09, 01/10, 08/10, 22/10, 29/10, 05/11, 03/12', 'conf-neuro'),
+        make('Quinta', 'Noite', '20:00 - 21:00', 'UEPA', 'Todos', '03/09', 'conf-neuro'),
+        make('Quarta', 'Noite', '19:00 - 21:00', 'UEPA', 'Todos', '05/08', 'conf-neuro'),
+        make('Segunda', 'Noite', '18:00 - 21:00', 'UEPA', 'Todos', '05/10', 'conf-neuro'),
+        make('Quinta', 'Noite', '19:00 - 21:00', 'UEPA', 'Todos', '17/12', 'avaliacao-neuro'),
+        make('Quinta', 'Tarde', '15:00', 'Laboratório de Habilidades', 'Todos', '10/12', 'osce-neuro')
+    ];
+}
+
 function processarDados(csvText) {
     try {
         const rows = parseCSV(csvText);
@@ -1448,7 +1736,8 @@ function processarDados(csvText) {
             gB: headers.findIndex(h => h.includes("grupo b")),
             gC: headers.findIndex(h => h.includes("grupo c")),
             gD: headers.findIndex(h => h.includes("grupo d")),
-            geral: headers.findIndex(h => h.includes("semanal"))
+            geral: headers.findIndex(h => h.includes("semanal")),
+            details: headers.findIndex(h => h.includes("detalhe"))
         };
 
         const requiredColumns = ['act','p','l','d','t'];
@@ -1469,7 +1758,8 @@ function processarDados(csvText) {
                 t: row[idx.t].trim(),
                 act: row[idx.act].trim(),
                 p: row[idx.p].trim(),
-                l: row[idx.l].trim()
+                l: row[idx.l].trim(),
+                detailMap: idx.details >= 0 ? parseDetailMap(row[idx.details] || '') : {}
             };
 
             const horario = row[idx.h] ? row[idx.h].trim() : "-";
@@ -1495,7 +1785,10 @@ function processarDados(csvText) {
             }
         }
         
-        DATA_LEGO = novoLego;
+        // Compatibilidade: enquanto o Google CSV ainda não tiver a nova coluna,
+        // aplica a sequência oficial sem deixar feriados consumirem a vez.
+        const structuredSource = idx.details >= 0;
+        DATA_LEGO = splitSpecialNeuroEvents(consolidateThemedItems(structuredSource ? novoLego : applyOfficialNeuroFallback(novoLego)));
         updateView(true); 
         return true;
     } catch (e) {
@@ -1511,6 +1804,37 @@ function setSyncStatus(state, text) {
     status.title = text;
     const label = status.querySelector('span');
     if (label) label.textContent = text;
+}
+
+async function resolveScheduleDataUrl() {
+    const registryUrl = localStorage.getItem(SOURCE_REGISTRY_KEY) || DEFAULT_SOURCE_REGISTRY_URL;
+    if (!registryUrl) return DATA_URL;
+    try {
+        const separator = registryUrl.includes('?') ? '&' : '?';
+        const response = await fetch(registryUrl + separator + 'nocache=' + Date.now());
+        if (!response.ok) throw new Error('Falha ao ler a planilha-ponte');
+        const rows = parseCSV(await response.text());
+        const headers = (rows[0] || []).map(h => h.trim().toLowerCase());
+        const orderIndex = headers.findIndex(h => h.includes('ordem'));
+        const urlIndex = headers.findIndex(h => h.includes('link') || h === 'url' || h.includes('csv'));
+        const activeIndex = headers.findIndex(h => h.includes('ativo'));
+        if (urlIndex < 0) throw new Error('Coluna Link CSV não encontrada');
+        const disabled = new Set(['não','nao','false','0','inativo']);
+        const candidates = rows.slice(1).map((row,index) => ({
+            url:String(row[urlIndex] || '').trim(),
+            order:Number(String(row[orderIndex] || '').replace(',','.')) || index + 1,
+            index,
+            active:activeIndex < 0 || !disabled.has(String(row[activeIndex] || '').trim().toLowerCase())
+        })).filter(entry => entry.active && /^https?:\/\//i.test(entry.url));
+        if (!candidates.length) throw new Error('Nenhum link ativo válido');
+        candidates.sort((a,b) => a.order - b.order || a.index - b.index);
+        const chosen = candidates[candidates.length - 1].url;
+        localStorage.setItem(LAST_RESOLVED_DATA_URL_KEY, chosen);
+        return chosen;
+    } catch (error) {
+        console.warn('Planilha-ponte indisponível; usando a última fonte válida.', error);
+        return localStorage.getItem(LAST_RESOLVED_DATA_URL_KEY) || DATA_URL;
+    }
 }
 
 async function sincronizarDados(manual = false) {
@@ -1539,8 +1863,9 @@ async function sincronizarDados(manual = false) {
     setSyncStatus('loading', manual ? 'Atualizando…' : 'Sincronizando…');
 
     try {
-        const separator = DATA_URL.includes('?') ? '&' : '?';
-        const response = await fetch(DATA_URL + separator + "nocache=" + new Date().getTime());
+        const resolvedDataUrl = await resolveScheduleDataUrl();
+        const separator = resolvedDataUrl.includes('?') ? '&' : '?';
+        const response = await fetch(resolvedDataUrl + separator + "nocache=" + new Date().getTime());
         if (!response.ok) throw new Error(`Falha HTTP ${response.status}`);
         const netData = await response.text();
         
@@ -1706,27 +2031,19 @@ function getClassPresentation(item) {
     }
 
     if (activity.startsWith('HP-8') && professor.includes('KALYSTA')) {
-        const topic = item.act.match(/^HP-8\s*-\s*(.+)$/i)?.[1]?.trim();
-        if (topic) {
-            const formattedTopic = topic.toLocaleLowerCase('pt-BR').replace(/(^|[\s/-])\p{L}/gu, letter => letter.toLocaleUpperCase('pt-BR'));
-            return { title: `HRBA - ${formattedTopic}`, color: 'var(--c-regional-aud)' };
-        }
-        if (location.includes('AUD HRBA')) {
+        if (getClassFamily(item) === 'hrba-aud') {
             return { title: 'HRBA - Auditório', color: 'var(--c-regional-aud)' };
         }
         return { title: 'HRBA - Onco/Hemato', color: 'var(--c-regional-onco)' };
     }
 
     if (activity.startsWith('HP-8') && professor.includes('MARCOS HONORATO')) {
-        if (activity.includes('CONF')) {
-            return { title: 'Conf - Neuro', color: 'var(--c-conf-neuro)' };
-        }
-        if (item.d === 'Quinta' && item.t === 'Manhã') {
-            return { title: 'Ambulatório - Neuro', color: 'var(--c-amb-neuro)' };
-        }
-        if (item.d === 'Quinta' && item.t === 'Tarde') {
-            return { title: 'HMS - Neuro', color: 'var(--c-municipal-neuro)' };
-        }
+        const family = getClassFamily(item);
+        if (family === 'avaliacao-neuro') return { title: 'Avaliação - Neuro', color: 'var(--c-avaliacao-neuro)' };
+        if (family === 'osce-neuro') return { title: 'OSCE - Neuro', color: 'var(--c-osce-neuro)' };
+        if (family === 'hms-neuro') return { title: 'HMS - Neuro', color: 'var(--c-municipal-neuro)' };
+        if (family === 'amb-neuro') return { title: 'Ambulatório - Neuro', color: 'var(--c-amb-neuro)' };
+        return { title: 'Conf - Neuro', color: 'var(--c-conf-neuro)' };
     }
 
     if (activity.startsWith('HP-8') && professor.includes('WESLEY MUNIZ')) {
@@ -1758,7 +2075,7 @@ const CLASS_STATE_RULES = [
     {
         key: 'pending',
         excludedFromCalculations: true,
-        matches: item => /^HP-8\s*-\s*(ANEMIAS|COAGULOPATIAS|CARCINOGÊNESE)$/i.test(item.act.trim())
+        matches: item => getClassFamily(item) === 'hrba-aud'
     }
 ];
 
@@ -1839,6 +2156,403 @@ async function generateImage() {
     }
 }
 
+function escapeExportHtml(value) {
+    return String(value ?? '').replace(/[&<>"']/g, char => ({
+        '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;'
+    })[char]);
+}
+
+function getRotationExportTone(type, professor) {
+    if (type === 'giesc') return 'tone-giesc';
+    const name = professor.toUpperCase();
+    if (name.includes('DAVID')) return 'tone-david';
+    if (name.includes('MARCOS')) return 'tone-marcos';
+    if (name.includes('KALYSTA')) return 'tone-kalysta';
+    if (name.includes('WESLEY')) return 'tone-wesley';
+    return 'tone-default';
+}
+
+function getRotationExportData() {
+    const relevant = DATA_LEGO.filter(item => /GIESC/i.test(item.act) || /^HP\s*-?\s*8/i.test(item.act));
+    const holidays = new Map();
+
+    relevant.filter(item => /FERIADO/i.test(item.act)).forEach(item => {
+        const type = /GIESC/i.test(item.act) ? 'giesc' : 'hp';
+        getItemOccurrences(item).forEach(date => {
+            holidays.set(`${type}|${calendarDateKey(date)}|${item.d}|${item.t}`, date);
+        });
+    });
+
+    const schedules = new Map();
+    relevant.filter(item => !/FERIADO/i.test(item.act)).forEach(item => {
+        const type = /GIESC/i.test(item.act) ? 'giesc' : 'hp';
+        const key = [type, item.p, item.d, item.t, item.l, item.h || ''].join('|');
+        if (!schedules.has(key)) {
+            schedules.set(key, {
+                type, professor:item.p, day:item.d, turn:item.t, location:item.l,
+                time:item.h || '', dates:new Map()
+            });
+        }
+        const schedule = schedules.get(key);
+        getItemOccurrences(item).forEach(date => {
+            if (date < START_DATE || date > END_DATE) return;
+            const dateKey = calendarDateKey(date);
+            if (!schedule.dates.has(dateKey)) schedule.dates.set(dateKey, { date, groups:new Set(), all:false, holiday:false });
+            const entry = schedule.dates.get(dateKey);
+            if (item.g === 'Todos') entry.all = true;
+            else if (item.g) entry.groups.add(item.g);
+            entry.holiday = entry.holiday || holidays.has(`${type}|${dateKey}|${item.d}|${item.t}`);
+        });
+    });
+
+    schedules.forEach(schedule => {
+        holidays.forEach((date, key) => {
+            const [type, dateKey, day, turn] = key.split('|');
+            if (type !== schedule.type || day !== schedule.day || turn !== schedule.turn) return;
+            if (!schedule.dates.has(dateKey)) schedule.dates.set(dateKey, { date, groups:new Set(), all:false, holiday:true });
+            else schedule.dates.get(dateKey).holiday = true;
+        });
+    });
+
+    const professorOrder = name => {
+        const upper = name.toUpperCase();
+        if (upper.includes('DAVID')) return 1;
+        if (upper.includes('MARCOS')) return 2;
+        if (upper.includes('KALYSTA')) return 3;
+        if (upper.includes('WESLEY')) return 4;
+        return 20;
+    };
+    const dayOrder = { Segunda:1, Terça:2, Quarta:3, Quinta:4, Sexta:5, Sábado:6 };
+    const turnOrder = { Manhã:1, Tarde:2, Noite:3 };
+    return [...schedules.values()].filter(schedule => schedule.dates.size).sort((a,b) =>
+        (a.type === b.type ? 0 : a.type === 'giesc' ? -1 : 1)
+        || professorOrder(a.professor) - professorOrder(b.professor)
+        || a.professor.localeCompare(b.professor, 'pt-BR')
+        || (dayOrder[a.day] || 9) - (dayOrder[b.day] || 9)
+        || (turnOrder[a.turn] || 9) - (turnOrder[b.turn] || 9)
+    );
+}
+
+function renderRotationExportBlock(schedule) {
+    const entries = [...schedule.dates.values()].sort((a,b) => a.date - b.date);
+    const hasGroupRow = entries.some(entry => !entry.all || entry.groups.size);
+    const tone = getRotationExportTone(schedule.type, schedule.professor);
+    const location = schedule.location.replace(/\s*\/\s*/g, '/');
+    const detail = schedule.type === 'giesc' ? 'RODÍZIO DE GIESC 8' : 'HABILIDADES PROFISSIONAIS · MED 8';
+    const time = schedule.time ? ` · ${schedule.time}` : '';
+    const wholeClass = !hasGroupRow ? ' · TODA A TURMA' : '';
+    const dayLabel = schedule.day === 'Sábado' ? 'SÁBADO' : `${schedule.day.toUpperCase()}-FEIRA`;
+    const captionMain = `${detail} · PROF. ${schedule.professor}`;
+    const captionMeta = `${dayLabel} · ${schedule.turn.toUpperCase()} · ${location}${time}${wholeClass}`;
+    const caption = `<span class="rotation-caption-main">${escapeExportHtml(captionMain)}</span><span class="rotation-caption-meta">${escapeExportHtml(captionMeta)}</span>`;
+    const dateCells = entries.map(entry => `<td class="rotation-date">${String(entry.date.getDate()).padStart(2,'0')}/${String(entry.date.getMonth()+1).padStart(2,'0')}</td>`).join('');
+    const groupCells = entries.map(entry => {
+        if (entry.holiday) return '<td class="rotation-holiday">FERIADO</td>';
+        if (entry.all && !entry.groups.size) return '<td class="rotation-group">TODOS</td>';
+        const groups = [...entry.groups].sort().join(' e ');
+        return `<td class="rotation-group">${escapeExportHtml(groups || '—')}</td>`;
+    }).join('');
+
+    if (!hasGroupRow) {
+        return `<div class="rotation-export-block ${tone}"><table class="rotation-export-table"><colgroup>${entries.map(() => '<col>').join('')}</colgroup><thead><tr><th class="rotation-caption" colspan="${entries.length}">${caption}</th></tr></thead><tbody><tr>${dateCells}</tr></tbody></table></div>`;
+    }
+    return `<div class="rotation-export-block ${tone}"><table class="rotation-export-table"><colgroup><col style="width:108px">${entries.map(() => '<col>').join('')}</colgroup><thead><tr><th class="rotation-caption" colspan="${entries.length + 1}">${caption}</th></tr></thead><tbody><tr><th class="rotation-corner" aria-hidden="true"></th>${dateCells}</tr><tr><th class="rotation-turn">${escapeExportHtml(schedule.turn)}</th>${groupCells}</tr></tbody></table></div>`;
+}
+
+function buildRotationExportSheet() {
+    const schedules = getRotationExportData();
+    if (!schedules.length) return '';
+    const giesc = schedules.filter(schedule => schedule.type === 'giesc');
+    const hp = schedules.filter(schedule => schedule.type === 'hp');
+    let html = '';
+    if (giesc.length) {
+        html += `<section class="rotation-export-section"><h1 class="rotation-master-heading">3- RODÍZIO DOS GRUPOS - AULAS DE GIESC-8</h1>${giesc.map(renderRotationExportBlock).join('')}</section>`;
+    }
+    const hpByProfessor = new Map();
+    hp.forEach(schedule => {
+        if (!hpByProfessor.has(schedule.professor)) hpByProfessor.set(schedule.professor, []);
+        hpByProfessor.get(schedule.professor).push(schedule);
+    });
+    if (hp.length) html += '<h1 class="rotation-master-heading">4- RODÍZIO DOS GRUPOS - AULAS DE HP 8</h1>';
+    [...hpByProfessor.entries()].forEach(([professor, blocks]) => {
+        html += `<section class="rotation-export-section"><h2 class="rotation-export-heading">CRONOGRAMA DAS AULAS HP-8: ${escapeExportHtml(professor)}</h2>${blocks.map(renderRotationExportBlock).join('')}</section>`;
+    });
+    return html;
+}
+
+function getRotationPdfPalette(type, professor) {
+    const tone = getRotationExportTone(type, professor);
+    const palettes = {
+        'tone-giesc':  { body:[207,226,243], caption:[185,203,217], date:[218,233,245] },
+        'tone-wesley': { body:[207,226,243], caption:[185,203,217], date:[218,233,245] },
+        'tone-david':  { body:[217,234,211], caption:[195,211,190], date:[229,240,225] },
+        'tone-marcos': { body:[255,229,153], caption:[230,206,138], date:[255,237,184] },
+        'tone-kalysta':{ body:[234,153,232], caption:[210,138,208], date:[240,178,238] },
+        'tone-default':{ body:[217,226,243], caption:[195,203,220], date:[229,235,246] }
+    };
+    return palettes[tone] || palettes['tone-default'];
+}
+
+function exportHpGiescPdf() {
+    const JsPdf = window.jspdf?.jsPDF;
+    if (!JsPdf) {
+        alert('O gerador de PDF não carregou. Conecte-se à internet, recarregue a página e tente novamente.');
+        return;
+    }
+    const schedules = getRotationExportData();
+    if (!schedules.length) {
+        alert('Nenhum horário de HP ou GIESC foi encontrado nos dados atuais.');
+        return;
+    }
+
+    const button = document.getElementById('btnRotationPdf');
+    button.disabled = true;
+    button.textContent = 'Gerando…';
+
+    try {
+        const doc = new JsPdf({ orientation:'landscape', unit:'mm', format:'a3', compress:true });
+        const pageWidth = doc.internal.pageSize.getWidth();
+        const pageHeight = doc.internal.pageSize.getHeight();
+        const marginX = 10;
+        const marginTop = 10;
+        const marginBottom = 13;
+        const contentWidth = pageWidth - (marginX * 2);
+        let y = marginTop;
+
+        doc.setProperties({
+            title:`Horários HP e GIESC — MED8 ${SEMESTRE}`,
+            subject:'Cronograma de rodízios de HP e GIESC',
+            author:'MED8',
+            creator:'Cronograma MED8'
+        });
+
+        const addPage = () => { doc.addPage('a3','landscape'); y = marginTop; };
+        const ensureSpace = height => { if (y + height > pageHeight - marginBottom) addPage(); };
+        const drawMasterHeading = text => {
+            ensureSpace(20);
+            doc.setFont('helvetica','bold');
+            doc.setFontSize(24);
+            doc.setTextColor(21,21,21);
+            doc.text(text, marginX, y + 8);
+            doc.setDrawColor(21,21,21);
+            doc.setLineWidth(1);
+            doc.line(marginX, y + 12, pageWidth - marginX, y + 12);
+            y += 19;
+        };
+        const drawProfessorHeading = professor => {
+            ensureSpace(16);
+            doc.setFont('helvetica','bold');
+            doc.setFontSize(19);
+            doc.setTextColor(21,21,21);
+            doc.text(`CRONOGRAMA DAS AULAS HP-8: ${professor.toUpperCase()}`, marginX + 1, y + 7);
+            y += 13;
+        };
+        const drawCell = (x, top, width, height, fill, text, options = {}) => {
+            doc.setFillColor(...fill);
+            doc.setDrawColor(20,20,20);
+            doc.setLineWidth(.35);
+            doc.rect(x, top, width, height, 'FD');
+            if (text === '' || text === null || text === undefined) return;
+            doc.setFont('helvetica', options.bold === false ? 'normal' : 'bold');
+            doc.setFontSize(options.size || 14);
+            doc.setTextColor(...(options.color || [21,21,21]));
+            doc.text(String(text), x + (width / 2), top + (height / 2) + 1.2, { align:'center', baseline:'middle' });
+        };
+        const drawSchedule = schedule => {
+            const entries = [...schedule.dates.values()].sort((a,b) => a.date - b.date);
+            const hasGroupRow = entries.some(entry => !entry.all || entry.groups.size);
+            const captionHeight = 20;
+            const dateHeight = 14;
+            const groupHeight = hasGroupRow ? 15 : 0;
+            const tableHeight = captionHeight + dateHeight + groupHeight;
+            ensureSpace(tableHeight + 7);
+
+            const palette = getRotationPdfPalette(schedule.type, schedule.professor);
+            const firstColumn = hasGroupRow ? 24 : 0;
+            const dateWidth = (contentWidth - firstColumn) / entries.length;
+            const location = schedule.location.replace(/\s*\/\s*/g,'/');
+            const dayLabel = schedule.day === 'Sábado' ? 'SÁBADO' : `${schedule.day.toUpperCase()}-FEIRA`;
+            const wholeClass = hasGroupRow ? '' : ' · TODA A TURMA';
+            const detail = schedule.type === 'giesc' ? 'RODÍZIO DE GIESC 8' : 'HABILIDADES PROFISSIONAIS · MED 8';
+            const main = `${detail} · PROF. ${schedule.professor}`;
+            const meta = `${dayLabel} · ${schedule.turn.toUpperCase()} · ${location}${schedule.time ? ` · ${schedule.time}` : ''}${wholeClass}`;
+
+            drawCell(marginX, y, contentWidth, captionHeight, palette.caption, '');
+            doc.setTextColor(21,21,21);
+            doc.setFont('helvetica','bold');
+            doc.setFontSize(15.5);
+            doc.text(main.toUpperCase(), pageWidth / 2, y + 7.5, { align:'center' });
+            doc.setFontSize(13);
+            doc.text(meta.toUpperCase(), pageWidth / 2, y + 15.3, { align:'center' });
+
+            const dateTop = y + captionHeight;
+            if (hasGroupRow) drawCell(marginX, dateTop, firstColumn, dateHeight, palette.date, '');
+            entries.forEach((entry, index) => {
+                const x = marginX + firstColumn + (index * dateWidth);
+                const dateText = `${String(entry.date.getDate()).padStart(2,'0')}/${String(entry.date.getMonth()+1).padStart(2,'0')}`;
+                drawCell(x, dateTop, dateWidth, dateHeight, palette.date, dateText, { size:14 });
+            });
+
+            if (hasGroupRow) {
+                const groupTop = dateTop + dateHeight;
+                drawCell(marginX, groupTop, firstColumn, groupHeight, palette.body, schedule.turn.toUpperCase(), { size:14 });
+                entries.forEach((entry, index) => {
+                    const x = marginX + firstColumn + (index * dateWidth);
+                    const holiday = entry.holiday;
+                    const groups = holiday ? 'FERIADO' : entry.all && !entry.groups.size ? 'TODOS' : [...entry.groups].sort().join(' e ') || '—';
+                    drawCell(x, groupTop, dateWidth, groupHeight, palette.body, groups, {
+                        size:holiday ? 11 : 15,
+                        color:holiday ? [205,0,0] : [21,21,21]
+                    });
+                });
+            }
+            y += tableHeight + 6;
+        };
+
+        const giesc = schedules.filter(schedule => schedule.type === 'giesc');
+        const hp = schedules.filter(schedule => schedule.type === 'hp');
+        if (giesc.length) {
+            drawMasterHeading('3- RODÍZIO DOS GRUPOS - AULAS DE GIESC-8');
+            giesc.forEach(drawSchedule);
+            y += 3;
+        }
+        if (hp.length) drawMasterHeading('4- RODÍZIO DOS GRUPOS - AULAS DE HP 8');
+        const hpByProfessor = new Map();
+        hp.forEach(schedule => {
+            if (!hpByProfessor.has(schedule.professor)) hpByProfessor.set(schedule.professor, []);
+            hpByProfessor.get(schedule.professor).push(schedule);
+        });
+        hpByProfessor.forEach((blocks, professor) => {
+            const estimatedHeight = 13 + Math.min(90, blocks.length * 50);
+            ensureSpace(estimatedHeight);
+            drawProfessorHeading(professor);
+            blocks.forEach(drawSchedule);
+            y += 3;
+        });
+
+        const totalPages = doc.getNumberOfPages();
+        for (let page = 1; page <= totalPages; page++) {
+            doc.setPage(page);
+            doc.setFont('helvetica','normal');
+            doc.setFontSize(11);
+            doc.setTextColor(90,90,90);
+            doc.text(`MED8 ${SEMESTRE} · Página ${page} de ${totalPages}`, pageWidth - marginX, pageHeight - 5, { align:'right' });
+        }
+        doc.save(`Horarios_HP_GIESC_MED8_${SEMESTRE.replace('.','_')}.pdf`);
+        closeDeveloperDialog();
+    } catch (error) {
+        console.error('Erro ao gerar PDF vetorial:', error);
+        alert(`Não foi possível gerar o PDF: ${error.message || 'erro desconhecido'}`);
+    } finally {
+        button.disabled = false;
+        button.textContent = 'PDF';
+    }
+}
+
+function exportHpGiescHtml() {
+    const button = document.getElementById('btnRotationHtml');
+    const content = buildRotationExportSheet();
+    if (!content) {
+        alert('Nenhum horário de HP ou GIESC foi encontrado nos dados atuais.');
+        return;
+    }
+
+    button.disabled = true;
+    button.textContent = 'Gerando…';
+    const appStyles = [...document.querySelectorAll('head style')].map(style => style.textContent).join('\n');
+    const standaloneOverrides = `
+        @page { size: A3 landscape; margin: 0; }
+        html, body { margin:0 !important; padding:0 !important; width:1900px !important; min-width:1900px !important; min-height:1344px !important; background:#fff !important; color:#151515 !important; }
+        body { display:block !important; overflow:auto !important; }
+        .rotation-export-sheet { position:static !important; left:auto !important; top:auto !important; z-index:0 !important; width:1900px !important; min-width:1900px !important; min-height:1344px !important; margin:0 !important; overflow:visible !important; }
+        @media print {
+            html, body, .rotation-export-sheet { width:420mm !important; min-width:420mm !important; min-height:297mm !important; }
+            .rotation-export-sheet { padding:10mm 10mm 13mm !important; }
+        }
+        @media (max-width: 700px) { .rotation-export-sheet { transform:none !important; } }
+    `;
+    const documentHtml = `<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1900, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>Horários HP e GIESC — MED8 ${escapeExportHtml(SEMESTRE)}</title>
+<style>${appStyles}\n${standaloneOverrides}</style>
+</head>
+<body><main class="rotation-export-sheet">${content}</main></body>
+</html>`;
+
+    try {
+        const blob = new Blob([documentHtml], { type:'text/html;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `Horarios_HP_GIESC_MED8_${SEMESTRE.replace('.','_')}.html`;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 1500);
+        closeDeveloperDialog();
+    } catch (error) {
+        console.error('Erro ao exportar HTML de HP/GIESC:', error);
+        alert(`Não foi possível gerar o HTML: ${error.message || 'erro desconhecido'}`);
+    } finally {
+        button.disabled = false;
+        button.textContent = 'HTML';
+    }
+}
+
+async function exportHpGiescSchedules() {
+    if (typeof html2canvas !== 'function') {
+        alert('O recurso de exportação não carregou. Conecte-se à internet, recarregue a página e tente novamente.');
+        return;
+    }
+    const sheet = document.getElementById('rotationExportSheet');
+    const button = document.getElementById('btnRotationExport');
+    const html = buildRotationExportSheet();
+    if (!html) {
+        alert('Nenhum horário de HP ou GIESC foi encontrado nos dados atuais.');
+        return;
+    }
+
+    button.disabled = true;
+    button.textContent = 'Gerando…';
+    sheet.innerHTML = html;
+    sheet.classList.add('exporting');
+    closeDeveloperDialog();
+
+    try {
+        await document.fonts?.ready;
+        await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+        const width = sheet.scrollWidth;
+        const height = sheet.scrollHeight;
+        const desiredScale = 2;
+        const safeScale = Math.sqrt(38000000 / Math.max(1, width * height));
+        const scale = Math.max(1, Math.min(desiredScale, safeScale));
+        const canvas = await html2canvas(sheet, {
+            backgroundColor:'#ffffff', scale, logging:false, useCORS:true,
+            width, height, windowWidth:width, windowHeight:height
+        });
+        const blob = await new Promise((resolve, reject) => canvas.toBlob(result => result ? resolve(result) : reject(new Error('Falha ao criar o PNG.')), 'image/png'));
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `Horarios_HP_GIESC_MED8_${SEMESTRE.replace('.','_')}.png`;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 1500);
+    } catch (error) {
+        console.error('Erro ao exportar horários de HP/GIESC:', error);
+        alert(`Não foi possível gerar os horários: ${error.message || 'erro desconhecido'}`);
+    } finally {
+        sheet.classList.remove('exporting');
+        button.disabled = false;
+        button.textContent = 'PNG';
+    }
+}
+
 function getDatesForWeek(dateStr, offset) {
     if (dateStr === "Semanal") return ["Semanal"];
     const { start, end } = getWeekBounds(offset);
@@ -1874,6 +2588,17 @@ function getScheduleLabel(item) {
     if (item.g !== "Todos") return "Rodízio";
     if (isQuinzenalPorDatas(item.dates)) return "Quinzenal";
     return "Semanal";
+}
+
+function shouldShowSemesterWeeklyLabel(item) {
+    const activity = String(item.act || '').toUpperCase();
+    const professor = String(item.p || '').toUpperCase();
+    const family = item.classFamily || getClassFamily(item);
+    if (activity.includes('FERIADO')) return false;
+    return item.dates === 'Semanal' ||
+        (professor.includes('ALEXANDRE NETO') && activity.startsWith('HP-8')) ||
+        (family === 'conf-neuro' && item.d === 'Quinta') ||
+        activity.includes('TUTORIAL') || activity.includes('MORFO');
 }
 
 function renderCalendar() {
@@ -2038,9 +2763,23 @@ function showCalPopup(eventId, dateDisplay) {
     const classColor = isHoliday
         ? '#f59e0b'
         : (presentation?.color || 'var(--bar-hp8)');
-    const locName = getVisibleLocation(item.l) || item.l.split('/')[0];
-
     document.getElementById('popup-title').innerText = popupTitle;
+    const detailEntries = getOccurrenceDetailEntries(item, dateDisplay);
+    const topicRow = document.getElementById('popup-topic-row');
+    const topicEl = document.getElementById('popup-topic');
+    topicRow.hidden = !detailEntries.length;
+    topicEl.innerHTML = detailEntries.length
+        ? `<div class="popup-topic-list">${detailEntries.map(entry => {
+            const metaBits = [entry.meta?.h, getVisibleLocation(entry.meta?.l || '')].filter(Boolean).join(' · ');
+            return `<div class="popup-topic-item"><span class="popup-topic-date">${escapePopupHtml(entry.date)}</span><span class="popup-topic-body">${escapePopupHtml(entry.text)}${metaBits ? `<small class="popup-topic-meta">${escapePopupHtml(metaBits)}</small>` : ''}</span></div>`;
+        }).join('')}</div>`
+        : '';
+
+    const occurrenceMeta = getOccurrenceMeta(item, dateDisplay);
+    const locations = [...new Set(detailEntries.map(entry => entry.meta?.l).filter(Boolean))];
+    const locName = locations.length > 1
+        ? 'Locais variáveis'
+        : (getVisibleLocation(locations[0] || occurrenceMeta.l || item.l) || (locations[0] || occurrenceMeta.l || item.l).split('/')[0]);
     const locEl = document.getElementById('popup-loc');
     locEl.innerText = locName;
     popup.style.setProperty('--popup-class-color', classColor);
@@ -2050,20 +2789,21 @@ function showCalPopup(eventId, dateDisplay) {
     document.getElementById('popupTimer').style.backgroundColor = classColor;
     
     // Horário e Data 
-    const timeStr = item.h ? item.h.split(' - ')[0] : item.t; 
+    const timeStr = occurrenceMeta.h ? occurrenceMeta.h.split(' - ')[0] : (occurrenceMeta.t || item.t);
     let finalDate = dateDisplay && dateDisplay !== "Semanal" ? dateDisplay : "Semanal";
-    
-    if (finalDate !== "Semanal" && finalDate.length > 20) {
-        finalDate = finalDate.substring(0, 18) + "...";
-    }
-    
-    document.getElementById('popup-time').innerHTML = `<b>${timeStr}</b> <span style="opacity:0.4; margin:0 6px">•</span> ${item.d} ${finalDate !== "Semanal" ? '('+finalDate+')' : ''}`;
+
+    const manyOccurrences = detailEntries.length > 1;
+    const timeSummary = manyOccurrences
+        ? `<b>${detailEntries.length} ocorrências</b> <span style="opacity:0.4; margin:0 6px">•</span> Consulte a lista acima`
+        : `<b>${escapePopupHtml(timeStr)}</b> <span style="opacity:0.4; margin:0 6px">•</span> ${escapePopupHtml(occurrenceMeta.d || item.d)} ${finalDate !== "Semanal" ? '('+escapePopupHtml(finalDate)+')' : ''}`;
+    document.getElementById('popup-time').innerHTML = timeSummary;
     document.getElementById('popup-prof').innerHTML = `<b>${abrev(item.p)}</b>`;
 
     const timerBar = document.getElementById('popupTimer');
-    timerBar.style.animation = 'none'; timerBar.offsetHeight; timerBar.style.animation = 'countdown 8s linear forwards';
+    const popupDuration = manyOccurrences ? Math.min(30000, 12000 + detailEntries.length * 1400) : 8000;
+    timerBar.style.animation = 'none'; timerBar.offsetHeight; timerBar.style.animation = `countdown ${popupDuration}ms linear forwards`;
     popup.classList.add('visible');
-    popupTimeout = setTimeout(() => { popup.classList.remove('visible'); }, 8000);
+    popupTimeout = setTimeout(() => { popup.classList.remove('visible'); }, popupDuration);
 }
 
 function parseScheduleDate(value) {
@@ -2286,9 +3026,39 @@ function openDeveloperDialog() {
     const dialog = document.getElementById('developerDialog');
     document.getElementById('developerBlurToggle').checked = optionsBlurEnabled;
     refreshCustomCsvControls();
+    refreshSourceRegistryControls();
     dialog.classList.add('visible');
     dialog.setAttribute('aria-hidden','false');
     setTimeout(() => dialog.querySelector('.stats-dialog-close')?.focus({ preventScroll:true }),20);
+}
+
+function refreshSourceRegistryControls() {
+    const input = document.getElementById('sourceRegistryInput');
+    const state = document.getElementById('sourceRegistryState');
+    if (!input || !state) return;
+    const customValue = localStorage.getItem(SOURCE_REGISTRY_KEY) || '';
+    const value = customValue || DEFAULT_SOURCE_REGISTRY_URL;
+    input.value = value;
+    state.textContent = customValue ? 'Ponte personalizada' : 'Ponte padrão ativa';
+    state.classList.add('active');
+}
+
+function applySourceRegistry() {
+    const input = document.getElementById('sourceRegistryInput');
+    const value = input?.value.trim() || '';
+    try { new URL(value); } catch (_) { alert('Cole um link CSV publicado válido.'); input?.focus(); return; }
+    localStorage.setItem(SOURCE_REGISTRY_KEY, value);
+    localStorage.removeItem(CUSTOM_CSV_ENABLED_KEY);
+    refreshSourceRegistryControls();
+    refreshCustomCsvControls();
+    sincronizarDados(true);
+}
+
+function restoreDefaultSourceRegistry() {
+    localStorage.removeItem(SOURCE_REGISTRY_KEY);
+    localStorage.removeItem(LAST_RESOLVED_DATA_URL_KEY);
+    refreshSourceRegistryControls();
+    sincronizarDados(true);
 }
 
 function closeDeveloperDialog() {
@@ -2773,16 +3543,20 @@ function exportCalendarICS(selectedPeriods) {
             ? presentation.title
             : item.act.replace('-8', '').replace(' (FERIADO)', '').trim();
         const title = isHoliday ? `Feriado - ${baseTitle}` : baseTitle;
-        const location = item.l.split('/').map(part => part.trim()).filter(Boolean).join(' · ');
-
         getCalendarExportDates(item, selectedPeriods).forEach(date => {
-            getCalendarTimeRanges(item).forEach((range, rangeIndex) => {
+            const occurrenceDate = date.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
+            const occurrenceMeta = getOccurrenceMeta(item, occurrenceDate);
+            const occurrenceItem = { ...item, h:occurrenceMeta.h || item.h, l:occurrenceMeta.l || item.l, d:occurrenceMeta.d || item.d, t:occurrenceMeta.t || item.t };
+            const location = occurrenceItem.l.split('/').map(part => part.trim()).filter(Boolean).join(' · ');
+            getCalendarTimeRanges(occurrenceItem).forEach((range, rangeIndex) => {
                 const start = formatICSDateTime(date, range.startHour, range.startMinute);
                 const end = formatICSDateTime(date, range.endHour, range.endMinute);
                 const dateKey = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
                 const uidSource = [group, item.act, item.p, item.l, dateKey, start, rangeIndex].join('|');
+                const occurrenceDetail = getOccurrenceDetail(item, occurrenceDate);
                 const description = [
                     `Atividade: ${item.act}`,
+                    occurrenceDetail ? `Tema: ${occurrenceDetail}` : '',
                     `Professor: ${item.p}`,
                     `Grupo: ${group}`,
                     `Frequência: ${getScheduleLabel(item)}`,
@@ -2945,7 +3719,7 @@ function renderAgenda() {
         const isToday = dateKey === calendarDateKey(now);
         html += `<section class="agenda-day${isToday ? ' is-today' : ''}" data-agenda-date="${dateKey}"><div class="agenda-day-heading"${isToday ? ' aria-current="date"' : ''}><strong>${heading}</strong><span class="agenda-heading-meta"><span>${dateLabel}</span>${relativeBadge}</span></div><div class="agenda-list">`;
 
-        dayEntries.forEach(({ item }) => {
+        dayEntries.forEach(({ item, date }) => {
             const actL = item.act.toLowerCase();
             const presentation = getClassPresentation(item);
             const holiday = actL.includes('feriado');
@@ -2962,9 +3736,10 @@ function renderAgenda() {
                 : actL.includes('morfo')
                 ? 'Morfo'
                 : item.act.replace(' (FERIADO)', '');
-            const time = item.h ? item.h.replace(/\s*\/\s*/g, '<br>') : item.t;
-            const location = getVisibleLocation(item.l);
             const dateParam = date.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
+            const occurrenceMeta = getOccurrenceMeta(item, dateParam);
+            const time = occurrenceMeta.h ? occurrenceMeta.h.replace(/\s*\/\s*/g, '<br>') : (occurrenceMeta.t || item.t);
+            const location = getVisibleLocation(occurrenceMeta.l || item.l);
             html += `<button class="agenda-card${holiday ? ' holiday' : ''}${classState ? ` class-${classState.key}` : ''}" style="--agenda-color:${color}" onclick="showCalPopup('${item.id}', '${dateParam}')">
                 <span class="agenda-time">${time}</span>
                 <span class="agenda-content"><span class="agenda-title">${holiday ? '⚠️ ' : ''}${activity}</span><span class="agenda-prof">${abrev(item.p)} · ${getScheduleLabel(item)}</span></span>
@@ -3142,6 +3917,9 @@ function updateView(shouldShowPopup = false) {
                     else if(actL.includes("morfo")) colorClass = "morfo";
                     const isHoliday = actL.includes('feriado');
                     if (isHoliday) colorClass += " holiday";
+                    const eventFamily = m.classFamily || getClassFamily(m);
+                    const eventType = isHoliday ? 'holiday' : eventFamily === 'osce-neuro' ? 'osce' : eventFamily === 'avaliacao-neuro' ? 'evaluation' : '';
+                    if (eventType) colorClass += ` special-event event-${eventType}`;
 
                     let displayTitle = presentation?.title || m.act.replace(' (FERIADO)', '');
 
@@ -3149,15 +3927,21 @@ function updateView(shouldShowPopup = false) {
                     else if (m.act.includes("MORFO")) displayTitle = "Morfo";
                     else if (m.act.includes("GIESC")) displayTitle = "Giesc";
                     if (isHoliday) displayTitle = 'Feriado';
+                    const compactEventTitle = eventType === 'evaluation' ? 'Prova' : eventType === 'osce' ? 'OSCE' : eventType === 'holiday' ? 'Feriado' : displayTitle;
 
-                    const displayHour = m.h ? m.h.replace(/\s*\/\s*/g, '<br>') : '';
+                    const visibleDateTokens = [...String(filteredDates).matchAll(/\d{2}\/\d{2}/g)].map(match => match[0]);
+                    const visibleHours = [...new Set(visibleDateTokens.map(date => m.occurrenceMeta?.[date]?.h).filter(Boolean))];
+                    const rawDisplayHour = visibleHours.length > 1 ? 'Horários variáveis' : (visibleHours[0] || m.h || '');
+                    const displayHour = rawDisplayHour.replace(/\s*\/\s*/g, '<br>');
                     const hourBadge = displayHour ? `<div class="time-line"><span class="badge-time">${displayHour}</span></div>` : "";
                     
                     let dateDisplay = "";
-                    if (filteredDates === "Semanal" || filteredDates === "Quinzenal" || filteredDates === "Rodízio" || filteredDates === "Datas definidas") { 
-                        dateDisplay = `<div class="status-dot"></div> <span style="opacity:0.8">${filteredDates}</span>`; 
+                    const semesterWeekly = activeFilter === 'all' && shouldShowSemesterWeeklyLabel(m);
+                    const visualDates = semesterWeekly ? 'Semanal' : filteredDates;
+                    if (visualDates === "Semanal" || visualDates === "Quinzenal" || visualDates === "Rodízio" || visualDates === "Datas definidas") { 
+                        dateDisplay = `${visualDates === 'Semanal' ? '<div class="status-dot"></div>' : ''} <span style="opacity:0.8">${visualDates}</span>`; 
                     } else { 
-                        dateDisplay = filteredDates; 
+                        dateDisplay = visualDates; 
                     }
 
                     const semanticClass = presentation && !isHoliday ? ' semantic-class' : '';
@@ -3169,7 +3953,7 @@ function updateView(shouldShowPopup = false) {
                         ? (classState ? '' : (relativeDayText ? `<div class="relative-day-line"><span class="relative-day-badge">${relativeDayText}</span></div>` : ''))
                         : `<div class="date-line">${dateDisplay}</div>`;
                     cellContent += `<div class="subject-block ${colorClass}${semanticClass}${stateClass}"${semanticStyle} role="button" tabindex="0" aria-label="Abrir detalhes de ${displayTitle}" onclick="showCalPopup('${m.id}', '${filteredDates}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showCalPopup('${m.id}', '${filteredDates}')}">
-                        <div class="card-header"><span class="card-title">${isHoliday ? '⚠️ ' : ''}${displayTitle}</span></div>
+                        <div class="card-header"><span class="card-title" data-compact-title="${compactEventTitle}">${displayTitle}</span></div>
                         ${dateLine}${hourBadge}
                     </div>`;
                 }
