@@ -1162,6 +1162,205 @@
             .calendar-week-list { grid-template-columns: repeat(2,minmax(0,1fr)); }
             .calendar-export-actions { bottom: -17px; margin: 14px -17px -17px; padding: 12px 17px 17px; display: grid; grid-template-columns: .8fr 1.4fr; }
         }
+        /* =========================================================
+           POLIMENTO 18 — controles de vidro leves
+           Um único blur no painel; botões usam apenas cor, borda e sombra.
+           ========================================================= */
+        .options-panel.open {
+            gap: 9px;
+            padding-top: 11px;
+            padding-bottom: 12px;
+        }
+
+        .options-panel .btn-icon {
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,.20);
+            background:
+                linear-gradient(145deg, rgba(255,255,255,.17), rgba(255,255,255,.065));
+            color: rgba(255,255,255,.96);
+            box-shadow:
+                inset 0 1px 0 rgba(255,255,255,.25),
+                0 5px 14px rgba(0,18,42,.15);
+            transition: transform .16s ease, background-color .16s ease,
+                        border-color .16s ease, box-shadow .16s ease;
+            backdrop-filter: none;
+            -webkit-backdrop-filter: none;
+        }
+
+        .options-panel .btn-icon::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            background: linear-gradient(115deg, rgba(255,255,255,.14), transparent 42%);
+        }
+
+        .options-panel .btn-icon:hover {
+            background: linear-gradient(145deg, rgba(255,255,255,.25), rgba(255,255,255,.11));
+            border-color: rgba(255,255,255,.34);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,.34), 0 7px 17px rgba(0,18,42,.20);
+            transform: translateY(-1px);
+        }
+
+        .options-panel .btn-icon:active { transform: scale(.97); }
+
+        .options-panel .btn-icon.active {
+            background: linear-gradient(145deg, rgba(255,255,255,.96), rgba(226,242,255,.86));
+            border-color: rgba(255,255,255,.86);
+            color: #0b4f82;
+            box-shadow: inset 0 1px 0 #fff, 0 6px 18px rgba(0,20,48,.22);
+            transform: none;
+        }
+
+        .options-panel .btn-label {
+            position: relative;
+            letter-spacing: .01em;
+            text-shadow: 0 1px 2px rgba(0,0,0,.12);
+        }
+        .options-panel .btn-icon.active .btn-label { text-shadow: none; }
+
+        body.dark-theme .view-switcher {
+            background:
+                linear-gradient(145deg, rgba(30,55,82,.62), rgba(10,20,35,.55));
+            border-color: rgba(125,211,252,.15);
+            box-shadow:
+                inset 0 1px 0 rgba(255,255,255,.09),
+                0 7px 20px rgba(0,0,0,.22);
+        }
+
+        body.dark-theme .view-btn {
+            color: #9fb1c7;
+            transition: color .16s ease, background-color .16s ease,
+                        box-shadow .16s ease, transform .16s ease;
+        }
+
+        body.dark-theme .view-btn:hover {
+            color: #e4f4ff;
+            background: rgba(125,211,252,.075);
+        }
+
+        body.dark-theme .view-btn.active {
+            color: #e8f7ff;
+            background:
+                linear-gradient(145deg, rgba(35,112,166,.76), rgba(25,74,120,.70));
+            border: 1px solid rgba(125,211,252,.20);
+            box-shadow:
+                inset 0 1px 0 rgba(255,255,255,.15),
+                0 4px 12px rgba(0,8,20,.26);
+        }
+
+        @media (max-width: 700px) {
+            .options-panel.open { gap: 7px; }
+            .options-panel .btn-icon {
+                border-radius: 13px;
+                box-shadow: inset 0 1px 0 rgba(255,255,255,.22), 0 3px 9px rgba(0,18,42,.13);
+            }
+            body.dark-theme .view-switcher { box-shadow: inset 0 1px 0 rgba(255,255,255,.08), 0 4px 13px rgba(0,0,0,.18); }
+        }
+
+        /* Polimento 22 — fluxo contínuo em vidro fosco, sem brilho artificial */
+        .app-title-period {
+            width: fit-content;
+            flex: 0 1 auto;
+            max-width: 170px;
+        }
+        .app-title-period .header-control-label {
+            width: auto;
+            max-width: 138px;
+        }
+
+        #header-row th {
+            background-image:
+                linear-gradient(105deg, rgba(54,149,96,.78) 0%, rgba(31,127,78,.75) 48%, rgba(17,103,64,.72) 100%) !important;
+            background-size: 700% 100% !important;
+            background-repeat: no-repeat !important;
+            border-right-color: rgba(255,255,255,.085);
+            box-shadow: inset 0 -1px 0 rgba(5,65,37,.13);
+            -webkit-backdrop-filter: blur(7px) saturate(135%);
+            backdrop-filter: blur(7px) saturate(135%);
+        }
+        #header-row th:nth-child(1) { background-position: 0% 0 !important; }
+        #header-row th:nth-child(2) { background-position: 16.666% 0 !important; }
+        #header-row th:nth-child(3) { background-position: 33.333% 0 !important; }
+        #header-row th:nth-child(4) { background-position: 50% 0 !important; }
+        #header-row th:nth-child(5) { background-position: 66.666% 0 !important; }
+        #header-row th:nth-child(6) { background-position: 83.333% 0 !important; }
+        #header-row th:nth-child(7) { background-position: 100% 0 !important; }
+        #header-row th.weekend-header,
+        #cornerGroup { background-color: transparent !important; }
+
+        .time-col {
+            background-image:
+                linear-gradient(180deg, rgba(26,105,169,.78) 0%, rgba(12,79,139,.75) 51%, rgba(5,60,111,.72) 100%) !important;
+            background-size: 100% 300% !important;
+            background-repeat: no-repeat !important;
+            border-bottom-color: rgba(255,255,255,.085);
+            box-shadow: inset -1px 0 0 rgba(0,40,77,.13);
+            -webkit-backdrop-filter: blur(7px) saturate(135%);
+            backdrop-filter: blur(7px) saturate(135%);
+        }
+        #scheduleBody tr:nth-child(1) .time-col { background-position: 0 0 !important; }
+        #scheduleBody tr:nth-child(2) .time-col { background-position: 0 50% !important; }
+        #scheduleBody tr:nth-child(3) .time-col { background-position: 0 100% !important; }
+
+        body.dark-theme #header-row th {
+            background-image:
+                linear-gradient(105deg, rgba(36,121,76,.69) 0%, rgba(21,98,62,.66) 48%, rgba(11,77,50,.63) 100%) !important;
+            border-right-color: rgba(174,244,204,.07);
+        }
+        body.dark-theme .time-col {
+            background-image:
+                linear-gradient(180deg, rgba(21,88,148,.69) 0%, rgba(11,67,120,.66) 52%, rgba(5,49,94,.63) 100%) !important;
+            border-bottom-color: rgba(147,197,253,.07);
+        }
+
+        /* Polimento 23 — presença discreta do dia atual na Grade e Agenda */
+        #header-row th.is-today {
+            box-shadow:
+                inset 0 -3px 0 rgba(125,211,252,.72),
+                inset 0 1px 0 rgba(255,255,255,.08);
+        }
+        td.today-column {
+            background: rgba(56,189,248,.065);
+            box-shadow:
+                inset 2px 0 0 rgba(14,165,233,.22),
+                inset -1px 0 0 rgba(14,165,233,.10);
+        }
+        body.dark-theme td.today-column {
+            background: rgba(14,165,233,.085);
+            box-shadow:
+                inset 2px 0 0 rgba(56,189,248,.26),
+                inset -1px 0 0 rgba(56,189,248,.10);
+        }
+        .agenda-day.is-today {
+            padding: 0 7px 7px;
+            border-radius: 13px;
+            background: linear-gradient(90deg, rgba(14,165,233,.075), rgba(14,165,233,.018) 72%, transparent);
+            box-shadow: inset 2px 0 0 rgba(14,165,233,.34);
+        }
+        body.dark-theme .agenda-day.is-today {
+            background: linear-gradient(90deg, rgba(56,189,248,.10), rgba(56,189,248,.025) 72%, transparent);
+            box-shadow: inset 2px 0 0 rgba(56,189,248,.38);
+        }
+        .agenda-day.is-today .agenda-day-heading {
+            outline: 1px solid rgba(125,211,252,.16);
+            outline-offset: -1px;
+        }
+
+        @media (max-width: 700px) {
+            #header-row th,
+            .time-col {
+                -webkit-backdrop-filter: blur(4px) saturate(120%);
+                backdrop-filter: blur(4px) saturate(120%);
+            }
+            .app-title-period {
+                width: fit-content;
+                flex: 0 1 auto;
+                max-width: 104px;
+            }
+            .app-title-period .header-control-label { max-width: 76px; }
+        }
     </style>
 </head>
 <body>
@@ -2947,7 +3146,32 @@ let activeChoiceOpener = null;
 function syncCustomControlLabel(selectId) {
     const select = document.getElementById(selectId);
     const label = document.getElementById(`${selectId}Label`);
-    if (select && label && select.selectedOptions[0]) label.textContent = select.selectedOptions[0].textContent;
+    if (select && label && select.selectedOptions[0]) {
+        label.textContent = select.selectedOptions[0].textContent;
+        if (selectId === 'periodSelect') resizePeriodControl();
+    }
+}
+
+function resizePeriodControl() {
+    const control = document.querySelector('.app-title-period');
+    const label = document.getElementById('periodSelectLabel');
+    if (!control || !label) return;
+
+    // Mede o texto real sem depender do espaço livre do flexbox.
+    const probe = document.createElement('span');
+    const style = getComputedStyle(label);
+    probe.textContent = label.textContent;
+    probe.style.cssText = `position:fixed;left:-9999px;top:-9999px;visibility:hidden;white-space:nowrap;font:${style.font};letter-spacing:${style.letterSpacing};text-transform:${style.textTransform}`;
+    document.body.appendChild(probe);
+    const textWidth = probe.getBoundingClientRect().width;
+    probe.remove();
+
+    const mobile = matchMedia('(max-width: 700px)').matches;
+    const minWidth = mobile ? 58 : 66;
+    const maxWidth = mobile ? 104 : 170;
+    const targetWidth = Math.round(Math.min(maxWidth, Math.max(minWidth, textWidth + (mobile ? 31 : 37))));
+    control.style.width = `${targetWidth}px`;
+    control.style.flex = `0 0 ${targetWidth}px`;
 }
 
 function openAppChoiceMenu(selectId) {
@@ -3878,6 +4102,7 @@ function updateView(shouldShowPopup = false) {
         days.forEach((day, index) => {
             const columnDate = selectedWeekBounds ? getDateForWeekday(selectedWeekBounds.start, index + 1) : null;
             const relativeDayText = columnDate ? getRelativeWeekDayText(columnDate) : '';
+            const isTodayColumn = activeFilter === 'currWeek' && columnDate && calendarDateKey(columnDate) === calendarDateKey(new Date());
             const matches = DATA_LEGO.filter(item => {
                 return item.d === day && item.t === turn && matchesActiveProfile(item, group);
             });
@@ -3958,7 +4183,7 @@ function updateView(shouldShowPopup = false) {
                     </div>`;
                 }
             });
-            html += `<td>${cellContent || "—"}</td>`;
+            html += `<td${isTodayColumn ? ' class="today-column" aria-current="date"' : ''}>${cellContent || "—"}</td>`;
         });
         html += "</tr>";
     });
@@ -3980,6 +4205,7 @@ function updateMatrixDayHeaders(days) {
         if (!singleWeek) {
             header.textContent = days[index];
             header.setAttribute('aria-label', days[index]);
+            header.classList.remove('is-today');
             return;
         }
         const date = getDateForWeekday(bounds.start, index + 1);
@@ -3987,6 +4213,7 @@ function updateMatrixDayHeaders(days) {
         const fullDate = date.toLocaleDateString('pt-BR');
         const today = new Date();
         const isToday = activeFilter === 'currWeek' && date.getFullYear() === today.getFullYear() && date.getMonth() === today.getMonth() && date.getDate() === today.getDate();
+        header.classList.toggle('is-today', isToday);
         header.innerHTML = `<span class="weekday-label">${days[index]}</span><span class="weekday-date">${dayNumber}</span>${isToday ? '<span class="weekday-today">HOJE</span>' : ''}`;
         header.setAttribute('aria-label', `${days[index]}, ${fullDate}${isToday ? ', hoje' : ''}`);
     });
@@ -4133,6 +4360,7 @@ function closePopupManual() {
     
     sel.value = localStorage.getItem(GROUP_STORAGE_KEY) || 'A';
     syncCustomControlLabel('groupSelect');
+    matchMedia('(max-width: 700px)').addEventListener?.('change', resizePeriodControl);
     document.getElementById('weekStartSelect').value = String(weekStartDay);
     syncCustomControlLabel('weekStartSelect');
     
