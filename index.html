@@ -96,6 +96,15 @@
 
             --neon-color: #00bcd4;
             --w-seg: 115px; --w-ter: 115px; --w-qua: 115px; --w-qui: 155px; --w-sex: 115px; --w-sab: 100px;
+            --custom-time-col-width: 40px; --custom-w-seg: 115px; --custom-w-ter: 115px; --custom-w-qua: 115px; --custom-w-qui: 155px; --custom-w-sex: 115px; --custom-w-sab: 100px;
+            --custom-cell-pad-y: 6px; --custom-cell-pad-x: 6px; --custom-header-pad-y: 12px; --custom-header-pad-x: 8px;
+            --custom-card-pad-y: 10px; --custom-card-pad-x: 10px; --custom-card-pad-left: 14px; --custom-card-gap: 6px;
+            --custom-event-pad-y: 6px; --custom-event-pad-x: 7px;
+            --custom-cal-grid-width: 720px; --custom-cal-gap-y: 6px; --custom-cal-gap-x: 6px;
+            --custom-cal-day-min-height: 110px; --custom-cal-day-pad-y: 4px; --custom-cal-day-pad-x: 4px;
+            --custom-cal-zone-min-height: 24px; --custom-cal-zone-pad-y: 3px; --custom-cal-zone-pad-right: 3px; --custom-cal-zone-pad-left: 14px;
+            --custom-cal-zone-gap: 3px; --custom-cal-zone-margin: 3px; --custom-cal-card-pad-y: 4px; --custom-cal-card-pad-x: 6px;
+            --custom-visual-zoom: 1;
         }
 
         /* --- MODO ESCURO --- */
@@ -271,6 +280,7 @@
 
         /* MODO CALENDÁRIO */
         .calendar-container { display: none; width: 100%; max-width: 1250px; background: var(--card-bg); padding: 12px; border-radius: 12px; box-shadow: 0 8px 25px rgba(0,0,0,0.06); border: 1px solid var(--border-color); overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        .calendar-zoom-layer { width:100%; }
         .calendar-header-title { text-align: center; font-weight: 800; color: var(--header-bg-blue); margin-bottom: 12px; font-size: 1.1rem; text-transform: uppercase; letter-spacing: 1px; position: sticky; left: 0; }
         body.dark-theme .calendar-header-title { color: var(--primary-blue); }
         
@@ -506,6 +516,27 @@
         body.panoramic-mode .relative-day-badge::before { width: 3px; height: 3px; box-shadow: none; }
         body.panoramic-mode .badge-time { font-size: 0.35rem; padding: 1px 2px; border-radius: 3px;}
         body.panoramic-mode .time-col { width: 20px !important; font-size: 0.45rem; }
+
+        /* Grade personalizada: dimensões estruturais e zoom visual independentes. */
+        body.custom-grid-mode #capture-area > table { zoom: var(--custom-visual-zoom); }
+        body.custom-grid-mode #capture-area .col-seg { width: var(--custom-w-seg); }
+        body.custom-grid-mode #capture-area .col-ter { width: var(--custom-w-ter); }
+        body.custom-grid-mode #capture-area .col-qua { width: var(--custom-w-qua); }
+        body.custom-grid-mode #capture-area .col-qui { width: var(--custom-w-qui); }
+        body.custom-grid-mode #capture-area .col-sex { width: var(--custom-w-sex); }
+        body.custom-grid-mode #capture-area .col-sab { width: var(--custom-w-sab); }
+        body.custom-grid-mode #capture-area .time-col, body.custom-grid-mode #capture-area #cornerGroup { width:var(--custom-time-col-width) !important; }
+        body.custom-grid-mode #capture-area td { padding: var(--custom-cell-pad-y) var(--custom-cell-pad-x); }
+        body.custom-grid-mode #capture-area th { padding: var(--custom-header-pad-y) var(--custom-header-pad-x); }
+        body.custom-grid-mode #capture-area .subject-block { padding: var(--custom-card-pad-y) var(--custom-card-pad-x) var(--custom-card-pad-y) var(--custom-card-pad-left); margin-bottom: var(--custom-card-gap); }
+        body.custom-grid-mode #capture-area .subject-block.special-event { padding: var(--custom-event-pad-y) var(--custom-event-pad-x); }
+        body.custom-grid-mode #calendar-area { width:fit-content; max-width:100%; }
+        body.custom-grid-mode #calendar-area .calendar-zoom-layer { width:var(--custom-cal-grid-width); zoom:var(--custom-visual-zoom); }
+        body.custom-grid-mode #calendar-area .calendar-grid { width:100%; min-width:0; grid-template-columns:repeat(6,minmax(0,1fr)); row-gap:var(--custom-cal-gap-y); column-gap:var(--custom-cal-gap-x); }
+        body.custom-grid-mode #calendar-area .cal-header, body.custom-grid-mode #calendar-area .cal-day, body.custom-grid-mode #calendar-area .cal-zone, body.custom-grid-mode #calendar-area .micro-card { min-width:0; }
+        body.custom-grid-mode #calendar-area .cal-day { min-height:var(--custom-cal-day-min-height); padding:var(--custom-cal-day-pad-y) var(--custom-cal-day-pad-x); }
+        body.custom-grid-mode #calendar-area .cal-zone { min-height:var(--custom-cal-zone-min-height); gap:var(--custom-cal-zone-gap); padding:var(--custom-cal-zone-pad-y) var(--custom-cal-zone-pad-right) var(--custom-cal-zone-pad-y) var(--custom-cal-zone-pad-left); margin-bottom:var(--custom-cal-zone-margin); }
+        body.custom-grid-mode #calendar-area .micro-card { padding:var(--custom-cal-card-pad-y) var(--custom-cal-card-pad-x); }
         
         body.panoramic-mode .calendar-grid { min-width: 0; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 2px; }
         body.panoramic-mode .cal-header { font-size: 0.4rem; padding: 2px 0; }
@@ -1087,6 +1118,48 @@
         .stats-selected-week { margin-top: 8px; color: var(--text-meta); font-size: .62rem; text-align: center; }
         .stats-unlock-toast { position: fixed; left: 50%; bottom: 88px; z-index: 900; padding: 10px 14px; border: 1px solid rgba(74,222,128,.34); border-radius: 999px; background: rgba(6,78,59,.94); color: #dcfce7; box-shadow: 0 12px 34px rgba(0,0,0,.28); font-size: .7rem; font-weight: 760; transform: translate(-50%,20px); opacity: 0; pointer-events: none; transition: opacity .2s ease, transform .2s ease; }
         .stats-unlock-toast.visible { opacity: 1; transform: translate(-50%,0); }
+        .grid-view-card { width:min(540px,100%); overflow:hidden; }
+        .grid-view-modes { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:7px; }
+        .grid-view-mode-btn { min-width:0; min-height:54px; padding:8px 6px; border:1px solid var(--glass-stroke-soft); border-radius:14px; background:rgba(255,255,255,.12); color:var(--text-main); font:760 .65rem 'Inter',sans-serif; cursor:pointer; transition:border-color .16s ease,background .16s ease,transform .16s ease; }
+        .grid-view-mode-btn span { display:block; margin-bottom:3px; font-size:1rem; line-height:1; }
+        .grid-view-mode-btn:hover { transform:translateY(-1px); border-color:rgba(14,116,144,.35); }
+        .grid-view-mode-btn.active { border-color:rgba(14,116,144,.52); background:linear-gradient(145deg,rgba(14,116,144,.16),rgba(34,197,94,.10)); box-shadow:inset 0 1px 0 rgba(255,255,255,.28); }
+        body.dark-theme .grid-view-mode-btn { background:rgba(148,163,184,.07); }
+        body.dark-theme .grid-view-mode-btn.active { background:linear-gradient(145deg,rgba(14,116,144,.24),rgba(34,197,94,.13)); }
+        .grid-custom-controls { display:none; margin-top:11px; padding:13px; border:1px solid var(--glass-stroke-soft); border-radius:16px; background:rgba(255,255,255,.09); }
+        .grid-custom-controls.visible { display:grid; gap:14px; }
+        body.dark-theme .grid-custom-controls { background:rgba(148,163,184,.055); }
+        .grid-range-label strong { display:block; font-size:.72rem; }
+        .grid-range-label span { display:block; margin-top:2px; color:var(--text-meta); font-size:.57rem; line-height:1.35; }
+        .grid-custom-footer { display:flex; align-items:center; justify-content:space-between; gap:10px; padding-top:2px; }
+        .grid-custom-note { color:var(--text-meta); font-size:.55rem; line-height:1.35; }
+        .grid-reset-btn { flex:0 0 auto; min-height:34px; padding:0 10px; border:1px solid var(--glass-stroke-soft); border-radius:10px; background:rgba(255,255,255,.10); color:var(--text-main); font:740 .58rem 'Inter',sans-serif; cursor:pointer; }
+        .grid-corner-dock { position:fixed; right:max(12px,env(safe-area-inset-right)); bottom:max(14px,calc(env(safe-area-inset-bottom) + 8px)); z-index:175; display:none; align-items:flex-end; gap:7px; padding:7px; border:1px solid var(--glass-stroke); border-radius:17px; background:color-mix(in srgb,var(--glass-surface-strong) 82%,transparent); box-shadow:0 13px 35px rgba(15,23,42,.22),inset 0 1px 0 rgba(255,255,255,.34); -webkit-backdrop-filter:blur(13px) saturate(140%); backdrop-filter:blur(13px) saturate(140%); }
+        body.custom-grid-mode:not(.agenda-mode) .grid-corner-dock { display:flex; }
+        body.capturing .grid-corner-dock, body.options-open .grid-corner-dock { display:none !important; }
+        body.dark-theme .grid-corner-dock { background:rgba(12,21,35,.82); border-color:rgba(148,163,184,.26); }
+        .grid-corner-collapse { position:absolute; right:-7px; top:-9px; width:25px; height:25px; display:grid; place-items:center; padding:0; border:1px solid var(--glass-stroke); border-radius:9px; background:color-mix(in srgb,var(--card-bg) 90%,transparent); color:var(--text-meta); box-shadow:0 5px 14px rgba(15,23,42,.14); font:800 .82rem/1 'Inter',sans-serif; cursor:pointer; }
+        body.dark-theme .grid-corner-collapse { background:rgba(20,30,48,.94); }
+        .grid-corner-restore { display:none; width:42px; height:42px; place-items:center; padding:0; border:1px solid var(--glass-stroke-soft); border-radius:11px; background:rgba(255,255,255,.13); color:var(--text-main); box-shadow:inset 0 1px 0 rgba(255,255,255,.25); font-size:1rem; cursor:pointer; }
+        body.dark-theme .grid-corner-restore { background:rgba(148,163,184,.08); }
+        body.grid-controls-collapsed .grid-corner-dock { padding:5px; border-radius:14px; }
+        body.grid-controls-collapsed .grid-corner-control, body.grid-controls-collapsed .grid-corner-collapse, body.grid-controls-collapsed .grid-corner-hint { display:none !important; }
+        body.grid-controls-collapsed .grid-corner-restore { display:grid; }
+        .grid-corner-hint { position:absolute; right:0; bottom:calc(100% + 7px); width:max-content; max-width:220px; padding:6px 9px; border:1px solid var(--glass-stroke-soft); border-radius:10px; background:color-mix(in srgb,var(--card-bg) 92%,transparent); color:var(--text-meta); box-shadow:0 7px 20px rgba(15,23,42,.14); font-size:.54rem; font-weight:680; pointer-events:none; opacity:0; transform:translateY(5px); transition:opacity .18s ease,transform .18s ease; }
+        .grid-corner-dock.show-hint .grid-corner-hint { opacity:1; transform:translateY(0); }
+        .grid-corner-control { width:53px; height:53px; display:grid; grid-template-rows:1fr auto; place-items:center; padding:7px 4px 5px; border:1px solid var(--glass-stroke-soft); border-radius:12px; background:rgba(255,255,255,.13); color:var(--text-main); box-shadow:inset 0 1px 0 rgba(255,255,255,.25); cursor:grab; touch-action:none; user-select:none; -webkit-user-select:none; }
+        body.dark-theme .grid-corner-control { background:rgba(148,163,184,.08); }
+        .grid-corner-control:active, .grid-corner-control.dragging { cursor:grabbing; border-color:rgba(34,197,94,.50); background:rgba(34,197,94,.12); }
+        .grid-corner-icon { font-size:1.02rem; line-height:1; }
+        .grid-corner-value { color:var(--text-meta); font-size:.48rem; font-weight:820; line-height:1; }
+        body.grid-adjusting { cursor:grabbing; }
+        @media (max-width:520px) {
+            .grid-view-card { border-radius:23px 23px 0 0; }
+            .grid-view-mode-btn { min-height:50px; font-size:.58rem; }
+            .grid-view-mode-btn span { font-size:.9rem; }
+            .grid-corner-dock { right:9px; gap:5px; padding:6px; border-radius:15px; }
+            .grid-corner-control { width:48px; height:48px; border-radius:11px; }
+        }
         .dev-settings { display:grid; gap:9px; }
         .dev-setting-row { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px 13px; border:1px solid var(--glass-stroke-soft); border-radius:15px; background:rgba(255,255,255,.11); }
         .dev-setting-row strong { display:block; font-size:.73rem; }
@@ -1391,7 +1464,7 @@
     <div class="options-panel" id="optionsPanel">
             <button class="btn-icon" id="btnSync" aria-label="Atualizar dados" title="Atualizar dados" onclick="sincronizarDados(true)">🔄<span class="btn-label">Atualizar</span></button>
             <button class="btn-icon" id="btnHourToggle" aria-label="Mostrar ou ocultar horários" title="Mostrar horários" onclick="toggleHours()">⏰<span class="btn-label">Horários</span></button>
-            <button class="btn-icon" id="btnPanToggle" aria-label="Ativar visão compacta" title="Visão compacta" onclick="togglePanoramic()">🔍<span class="btn-label">Compactar</span></button>
+            <button class="btn-icon" id="btnPanToggle" aria-label="Ajustar Grade ou Calendário" title="Ajustar Grade ou Calendário" onclick="openGridViewDialog()">🔍<span class="btn-label">Normal</span></button>
             <button class="btn-icon active" id="btnThemeToggle" aria-label="Alternar tema" title="Alternar tema" onclick="toggleDarkMode()">🌓<span class="btn-label">Tema</span></button>
             <button class="btn-icon" id="btnExport" aria-label="Exportar imagem" title="Exportar imagem" onclick="generateImage()">🖼️<span class="btn-label">Exportar</span></button>
             <button class="btn-icon" id="btnCalendarExport" aria-label="Escolher período e exportar calendário" title="Exportar calendário" onclick="openCalendarExportDialog()">📆<span class="btn-label">Calendário</span></button>
@@ -1480,6 +1553,14 @@
 
 <div id="calendar-area" class="calendar-container"></div>
 <div id="agenda-area" class="agenda-container"></div>
+<div id="gridCornerDock" class="grid-corner-dock" aria-label="Ajustes personalizados da visualização">
+    <button class="grid-corner-collapse" type="button" aria-label="Ocultar controles personalizados" title="Ocultar controles" onclick="setGridControlsCollapsed(true)">−</button>
+    <button class="grid-corner-restore" type="button" aria-label="Mostrar controles personalizados" title="Mostrar controles" onclick="setGridControlsCollapsed(false)">✥</button>
+    <span class="grid-corner-hint">Arraste os quadrados. Duplo toque restaura somente aquele ajuste.</span>
+    <button id="gridHorizontalControl" class="grid-corner-control" type="button" role="slider" aria-label="Ajustar largura horizontal" aria-valuemin="20" aria-valuemax="300" aria-valuenow="100" title="Arraste para os lados" onpointerdown="startGridCornerAdjust(event,'horizontal')" onkeydown="handleGridCornerKey(event,'horizontal')" ondblclick="resetCustomGridAxis('horizontal')"><span class="grid-corner-icon" aria-hidden="true">↔</span><span id="gridHorizontalDockValue" class="grid-corner-value">100%</span></button>
+    <button id="gridVerticalControl" class="grid-corner-control" type="button" role="slider" aria-label="Ajustar altura vertical" aria-valuemin="20" aria-valuemax="300" aria-valuenow="100" title="Arraste para cima ou para baixo" onpointerdown="startGridCornerAdjust(event,'vertical')" onkeydown="handleGridCornerKey(event,'vertical')" ondblclick="resetCustomGridAxis('vertical')"><span class="grid-corner-icon" aria-hidden="true">↕</span><span id="gridVerticalDockValue" class="grid-corner-value">100%</span></button>
+    <button id="gridVisualControl" class="grid-corner-control" type="button" role="slider" aria-label="Ajustar zoom visual" aria-valuemin="40" aria-valuemax="220" aria-valuenow="100" title="Arraste na diagonal" onpointerdown="startGridCornerAdjust(event,'visual')" onkeydown="handleGridCornerKey(event,'visual')" ondblclick="resetCustomGridAxis('visual')"><span class="grid-corner-icon" aria-hidden="true">⤢</span><span id="gridVisualDockValue" class="grid-corner-value">100%</span></button>
+</div>
 <section id="statsPanel" class="stats-panel" hidden aria-live="polite"></section>
 
 <div id="nextClassPopup" class="next-class-popup">
@@ -1544,6 +1625,28 @@
         <div class="calendar-export-actions">
             <button class="calendar-export-action" type="button" onclick="closeCalendarExportDialog()">Cancelar</button>
             <button class="calendar-export-action primary" type="button" onclick="confirmCalendarExport()">Gerar arquivo .ics</button>
+        </div>
+    </div>
+</div>
+
+<div id="gridViewDialog" class="stats-dialog-overlay" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="gridViewDialogTitle" onclick="if(event.target === this) closeGridViewDialog()">
+    <div class="stats-dialog-card grid-view-card">
+        <div class="stats-dialog-header">
+            <span class="stats-dialog-icon" aria-hidden="true">🔍</span>
+            <div><h2 id="gridViewDialogTitle">Tamanho da visualização</h2><p>Escolha um modo para a Grade e o Calendário.</p></div>
+            <button class="stats-dialog-close" type="button" aria-label="Fechar" onclick="closeGridViewDialog()">×</button>
+        </div>
+        <div class="grid-view-modes" role="group" aria-label="Modo de tamanho da Grade e do Calendário">
+            <button class="grid-view-mode-btn" type="button" data-grid-mode="compact" onclick="setGridViewMode('compact')"><span aria-hidden="true">▦</span>Compacto</button>
+            <button class="grid-view-mode-btn" type="button" data-grid-mode="normal" onclick="setGridViewMode('normal')"><span aria-hidden="true">□</span>Normal</button>
+            <button class="grid-view-mode-btn" type="button" data-grid-mode="custom" onclick="setGridViewMode('custom')"><span aria-hidden="true">↔</span>Personalizado</button>
+        </div>
+        <div id="gridCustomControls" class="grid-custom-controls">
+            <div class="grid-range-label"><strong>Controles flutuantes</strong><span>Feche esta janela e arraste os três quadrados no canto. Use o botão − para recolhê-los depois do ajuste.</span></div>
+            <div class="grid-custom-footer">
+                <span class="grid-custom-note">Funciona na Grade e no Calendário. A imagem exportada mantém o tamanho normal.</span>
+                <button class="grid-reset-btn" type="button" onclick="resetCustomGrid()">Restaurar 100%</button>
+            </div>
         </div>
     </div>
 </div>
@@ -1629,6 +1732,13 @@ const HP_MODE_STORAGE_KEY = "medHpModeByGroup_2026_2_v2";
 const WEEK_START_STORAGE_KEY = "medWeekStartDay_v1";
 const LEGACY_HP_PERSON_STORAGE_KEY = "medHpPerson_2026_2_v1";
 const VIEW_MODE_KEY = "viewMode_uiux_v1";
+const GRID_VIEW_MODE_KEY = "medGridViewMode_v1";
+const GRID_LAYOUT_SCALE_KEY = "medGridLayoutScale_v1";
+const GRID_HORIZONTAL_SCALE_KEY = "medGridHorizontalScale_v1";
+const GRID_VERTICAL_SCALE_KEY = "medGridVerticalScale_v1";
+const GRID_VISUAL_ZOOM_KEY = "medGridVisualZoom_v1";
+const GRID_VIEW_STATE_BY_VIEW_KEY = "medGridViewStateByView_v1";
+const GRID_CONTROLS_COLLAPSED_KEY = "medGridControlsCollapsed_v1";
 const STATS_UNLOCK_KEY = "medStatsUnlocked_v1";
 const STATS_ENABLED_KEY = "medStatsEnabled_v1";
 const STATS_CARDS_KEY = "medStatsCards_v1";
@@ -1642,6 +1752,38 @@ let showHours = false;
 let popupTimeout;
 let themeTransitionTimeout;
 let viewMode = localStorage.getItem(VIEW_MODE_KEY) || (window.matchMedia('(max-width: 700px)').matches ? 'agenda' : 'matrix');
+const storedGridMode = localStorage.getItem(GRID_VIEW_MODE_KEY);
+const legacyGridMode = ['normal','compact','custom'].includes(storedGridMode)
+    ? storedGridMode
+    : (localStorage.getItem('panoramicMode') === 'true' ? 'compact' : 'normal');
+const legacyGridLayoutScale = Number(localStorage.getItem(GRID_LAYOUT_SCALE_KEY)) || 100;
+const legacyGridHorizontal = Math.min(200, Math.max(60, Number(localStorage.getItem(GRID_HORIZONTAL_SCALE_KEY)) || legacyGridLayoutScale));
+const legacyGridVertical = Math.min(200, Math.max(60, Number(localStorage.getItem(GRID_VERTICAL_SCALE_KEY)) || legacyGridLayoutScale));
+const legacyGridVisual = Math.min(160, Math.max(70, Number(localStorage.getItem(GRID_VISUAL_ZOOM_KEY)) || 100));
+const legacyGridProfile = { mode:legacyGridMode, horizontal:legacyGridHorizontal, vertical:legacyGridVertical, visual:legacyGridVisual };
+let storedGridProfiles = {};
+try { storedGridProfiles = JSON.parse(localStorage.getItem(GRID_VIEW_STATE_BY_VIEW_KEY) || '{}') || {}; } catch (_) { storedGridProfiles = {}; }
+const normalizeGridProfile = profile => ({
+    mode:['normal','compact','custom'].includes(profile?.mode) ? profile.mode : legacyGridProfile.mode,
+    horizontal:Math.min(200,Math.max(60,Number(profile?.horizontal) || legacyGridProfile.horizontal)),
+    vertical:Math.min(200,Math.max(60,Number(profile?.vertical) || legacyGridProfile.vertical)),
+    visual:Math.min(160,Math.max(70,Number(profile?.visual) || legacyGridProfile.visual))
+});
+let gridViewStateByView = {
+    matrix:normalizeGridProfile(storedGridProfiles.matrix),
+    calendar:normalizeGridProfile(storedGridProfiles.calendar)
+};
+const initialGridScope = viewMode === 'calendar' ? 'calendar' : 'matrix';
+let activeGridScope = initialGridScope;
+let gridViewMode = gridViewStateByView[initialGridScope].mode;
+let gridHorizontalScale = gridViewStateByView[initialGridScope].horizontal;
+let gridVerticalScale = gridViewStateByView[initialGridScope].vertical;
+let gridVisualZoom = gridViewStateByView[initialGridScope].visual;
+let customGridFrame = 0;
+let gridCornerHintTimer;
+let gridProfileSaveTimer;
+let gridControlsCollapsed = localStorage.getItem(GRID_CONTROLS_COLLAPSED_KEY) === 'true';
+const gridCornerLastTap = { horizontal:0, vertical:0, visual:0 };
 let activeFilter = 'currWeek';
 const storedWeekStartDay = localStorage.getItem(WEEK_START_STORAGE_KEY);
 let weekStartDay = storedWeekStartDay === null ? 0 : Number(storedWeekStartDay);
@@ -2132,16 +2274,288 @@ function toggleHours() {
     }, 'layout-switching');
 }
 
-function togglePanoramic() {
+function getGridViewStateScope(mode = viewMode) {
+    if (mode === 'calendar') return 'calendar';
+    if (mode === 'matrix') return 'matrix';
+    return activeGridScope;
+}
+
+function persistCurrentGridProfile() {
+    clearTimeout(gridProfileSaveTimer);
+    const scope = getGridViewStateScope();
+    gridViewStateByView[scope] = {
+        mode:gridViewMode,
+        horizontal:gridHorizontalScale,
+        vertical:gridVerticalScale,
+        visual:gridVisualZoom
+    };
+    localStorage.setItem(GRID_VIEW_STATE_BY_VIEW_KEY, JSON.stringify(gridViewStateByView));
+}
+
+function scheduleCurrentGridProfilePersist() {
+    clearTimeout(gridProfileSaveTimer);
+    const scope = getGridViewStateScope();
+    const snapshot = { mode:gridViewMode, horizontal:gridHorizontalScale, vertical:gridVerticalScale, visual:gridVisualZoom };
+    gridProfileSaveTimer = setTimeout(() => {
+        gridViewStateByView[scope] = snapshot;
+        localStorage.setItem(GRID_VIEW_STATE_BY_VIEW_KEY, JSON.stringify(gridViewStateByView));
+    }, 180);
+}
+
+function loadGridProfileForView(mode) {
+    if (mode !== 'matrix' && mode !== 'calendar') return;
+    activeGridScope = getGridViewStateScope(mode);
+    const profile = gridViewStateByView[activeGridScope];
+    gridViewMode = profile.mode;
+    gridHorizontalScale = profile.horizontal;
+    gridVerticalScale = profile.vertical;
+    gridVisualZoom = profile.visual;
+    document.body.classList.toggle('panoramic-mode', gridViewMode === 'compact');
+    document.body.classList.toggle('custom-grid-mode', gridViewMode === 'custom');
+    applyCustomGridVariables();
+    updateGridViewControls();
+}
+
+function getEffectiveGridScale(rawValue, axis) {
+    const amplified = 100 + ((Number(rawValue) || 100) - 100) * 2;
+    return axis === 'visual'
+        ? Math.min(220, Math.max(40, Math.round(amplified)))
+        : Math.min(300, Math.max(20, Math.round(amplified)));
+}
+
+function applyCustomGridVariables() {
+    const horizontalScale = getEffectiveGridScale(gridHorizontalScale, 'horizontal') / 100;
+    const verticalScale = getEffectiveGridScale(gridVerticalScale, 'vertical') / 100;
+    const visualScale = getEffectiveGridScale(gridVisualZoom, 'visual') / 100;
+    const root = document.documentElement.style;
+    const setHorizontalPx = (name, base) => root.setProperty(name, `${Math.round(base * horizontalScale * 10) / 10}px`);
+    const setVerticalPx = (name, base) => root.setProperty(name, `${Math.round(base * verticalScale * 10) / 10}px`);
+    setHorizontalPx('--custom-time-col-width', 40);
+    setHorizontalPx('--custom-w-seg', 115);
+    setHorizontalPx('--custom-w-ter', 115);
+    setHorizontalPx('--custom-w-qua', 115);
+    setHorizontalPx('--custom-w-qui', 155);
+    setHorizontalPx('--custom-w-sex', 115);
+    setHorizontalPx('--custom-w-sab', 100);
+    setHorizontalPx('--custom-cell-pad-x', 6);
+    setHorizontalPx('--custom-header-pad-x', 8);
+    setHorizontalPx('--custom-card-pad-x', 10);
+    setHorizontalPx('--custom-card-pad-left', 14);
+    setHorizontalPx('--custom-event-pad-x', 7);
+    setVerticalPx('--custom-cell-pad-y', 6);
+    setVerticalPx('--custom-header-pad-y', 12);
+    setVerticalPx('--custom-card-pad-y', 10);
+    setVerticalPx('--custom-card-gap', 6);
+    setVerticalPx('--custom-event-pad-y', 6);
+    setHorizontalPx('--custom-cal-grid-width', 720);
+    setHorizontalPx('--custom-cal-gap-x', 6);
+    setHorizontalPx('--custom-cal-day-pad-x', 4);
+    setHorizontalPx('--custom-cal-zone-pad-right', 3);
+    setHorizontalPx('--custom-cal-zone-pad-left', 14);
+    setHorizontalPx('--custom-cal-card-pad-x', 6);
+    setVerticalPx('--custom-cal-gap-y', 6);
+    setVerticalPx('--custom-cal-day-min-height', 110);
+    setVerticalPx('--custom-cal-day-pad-y', 4);
+    setVerticalPx('--custom-cal-zone-min-height', 24);
+    setVerticalPx('--custom-cal-zone-pad-y', 3);
+    setVerticalPx('--custom-cal-zone-gap', 3);
+    setVerticalPx('--custom-cal-zone-margin', 3);
+    setVerticalPx('--custom-cal-card-pad-y', 4);
+    root.setProperty('--custom-visual-zoom', String(visualScale));
+}
+
+function updateGridViewControls() {
+    document.querySelectorAll('[data-grid-mode]').forEach(button => {
+        const active = button.dataset.gridMode === gridViewMode;
+        button.classList.toggle('active', active);
+        button.setAttribute('aria-pressed', active ? 'true' : 'false');
+    });
+    document.getElementById('gridCustomControls')?.classList.toggle('visible', gridViewMode === 'custom');
+    const values = {
+        horizontal:getEffectiveGridScale(gridHorizontalScale, 'horizontal'),
+        vertical:getEffectiveGridScale(gridVerticalScale, 'vertical'),
+        visual:getEffectiveGridScale(gridVisualZoom, 'visual')
+    };
+    Object.entries(values).forEach(([axis, value]) => {
+        const capitalized = axis[0].toUpperCase() + axis.slice(1);
+        const output = document.getElementById(`grid${capitalized}DockValue`);
+        const control = document.getElementById(`grid${capitalized}Control`);
+        if (output) output.textContent = `${value}%`;
+        if (control) control.setAttribute('aria-valuenow', String(value));
+    });
+
+    const button = document.getElementById('btnPanToggle');
+    if (button) {
+        const labels = { normal:'Normal', compact:'Compacto', custom:'Personalizado' };
+        button.querySelector('.btn-label').textContent = labels[gridViewMode];
+        button.classList.toggle('active', gridViewMode !== 'normal');
+        button.title = `Visualização: ${labels[gridViewMode]}`;
+        button.setAttribute('aria-label', `Ajustar Grade ou Calendário. Atual: ${labels[gridViewMode]}`);
+    }
+}
+
+function setGridViewMode(mode, options = {}) {
+    if (!['normal','compact','custom'].includes(mode)) return;
+    gridViewMode = mode;
     document.body.classList.add('layout-switching');
-    const isPan = document.body.classList.toggle('panoramic-mode');
-    document.getElementById('btnPanToggle').classList.toggle('active', isPan);
-    localStorage.setItem('panoramicMode', isPan ? 'true' : 'false');
+    document.body.classList.toggle('panoramic-mode', mode === 'compact');
+    document.body.classList.toggle('custom-grid-mode', mode === 'custom');
+    applyCustomGridVariables();
+    updateGridViewControls();
+    if (options.persist !== false) {
+        persistCurrentGridProfile();
+        localStorage.setItem(GRID_VIEW_MODE_KEY, mode);
+        localStorage.setItem('panoramicMode', mode === 'compact' ? 'true' : 'false');
+    }
+    if (mode === 'custom' && options.persist !== false && !document.getElementById('gridViewDialog')?.classList.contains('visible')) showGridCornerHint();
     requestAnimationFrame(() => requestAnimationFrame(() => {
         document.body.classList.remove('layout-switching');
-        if (!isPan && viewMode === 'matrix') focusMatrixCurrentDay();
-        if (!isPan && viewMode === 'calendar') focusCalendarCurrentDay();
+        if (mode !== 'compact' && viewMode === 'matrix') focusMatrixCurrentDay();
+        if (mode !== 'compact' && viewMode === 'calendar') focusCalendarCurrentDay();
     }));
+}
+
+function queueCustomGridUpdate() {
+    cancelAnimationFrame(customGridFrame);
+    customGridFrame = requestAnimationFrame(() => {
+        applyCustomGridVariables();
+        updateGridViewControls();
+    });
+}
+
+function setCustomGridHorizontal(value, persist = true) {
+    gridHorizontalScale = Math.min(200, Math.max(60, Number(value) || 100));
+    if (persist) persistCurrentGridProfile(); else scheduleCurrentGridProfilePersist();
+    queueCustomGridUpdate();
+}
+
+function setCustomGridVertical(value, persist = true) {
+    gridVerticalScale = Math.min(200, Math.max(60, Number(value) || 100));
+    if (persist) persistCurrentGridProfile(); else scheduleCurrentGridProfilePersist();
+    queueCustomGridUpdate();
+}
+
+function setCustomGridVisualZoom(value, persist = true) {
+    gridVisualZoom = Math.min(160, Math.max(70, Number(value) || 100));
+    if (persist) persistCurrentGridProfile(); else scheduleCurrentGridProfilePersist();
+    queueCustomGridUpdate();
+}
+
+function persistCustomGridAxis(axis) {
+    persistCurrentGridProfile();
+}
+
+function setGridControlsCollapsed(collapsed, persist = true) {
+    gridControlsCollapsed = Boolean(collapsed);
+    document.body.classList.toggle('grid-controls-collapsed', gridControlsCollapsed);
+    if (persist) localStorage.setItem(GRID_CONTROLS_COLLAPSED_KEY, String(gridControlsCollapsed));
+    if (!gridControlsCollapsed && gridViewMode === 'custom') requestAnimationFrame(showGridCornerHint);
+}
+
+function showGridCornerHint() {
+    const dock = document.getElementById('gridCornerDock');
+    if (!dock || gridControlsCollapsed) return;
+    clearTimeout(gridCornerHintTimer);
+    dock.classList.add('show-hint');
+    gridCornerHintTimer = setTimeout(() => dock.classList.remove('show-hint'), 3200);
+}
+
+function startGridCornerAdjust(event, axis) {
+    if (event.pointerType === 'mouse' && event.button !== 0) return;
+    event.preventDefault();
+    const control = event.currentTarget;
+    control.focus({ preventScroll:true });
+    const startX = event.clientX;
+    const startY = event.clientY;
+    const startValue = axis === 'horizontal' ? gridHorizontalScale : axis === 'vertical' ? gridVerticalScale : gridVisualZoom;
+    const pointerId = event.pointerId;
+    let moved = false;
+    control.classList.add('dragging');
+    document.body.classList.add('grid-adjusting');
+    document.getElementById('gridCornerDock')?.classList.remove('show-hint');
+    try { control.setPointerCapture(pointerId); } catch (_) {}
+
+    const move = moveEvent => {
+        if (moveEvent.pointerId !== pointerId) return;
+        const horizontalDelta = moveEvent.clientX - startX;
+        const verticalDelta = startY - moveEvent.clientY;
+        if (Math.abs(horizontalDelta) > 3 || Math.abs(verticalDelta) > 3) moved = true;
+        const delta = axis === 'horizontal' ? horizontalDelta : axis === 'vertical' ? verticalDelta : (horizontalDelta + verticalDelta) / 2;
+        const nextValue = startValue + delta / 1.6;
+        if (axis === 'horizontal') setCustomGridHorizontal(nextValue, false);
+        if (axis === 'vertical') setCustomGridVertical(nextValue, false);
+        if (axis === 'visual') setCustomGridVisualZoom(nextValue, false);
+    };
+    const finish = finishEvent => {
+        if (finishEvent.pointerId !== pointerId) return;
+        control.removeEventListener('pointermove', move);
+        control.removeEventListener('pointerup', finish);
+        control.removeEventListener('pointercancel', finish);
+        control.classList.remove('dragging');
+        document.body.classList.remove('grid-adjusting');
+        persistCustomGridAxis(axis);
+        if (!moved) {
+            const now = Date.now();
+            if (now - gridCornerLastTap[axis] < 340) {
+                resetCustomGridAxis(axis);
+                gridCornerLastTap[axis] = 0;
+            } else {
+                gridCornerLastTap[axis] = now;
+            }
+        }
+        try { control.releasePointerCapture(pointerId); } catch (_) {}
+    };
+    control.addEventListener('pointermove', move);
+    control.addEventListener('pointerup', finish);
+    control.addEventListener('pointercancel', finish);
+}
+
+function resetCustomGridAxis(axis) {
+    if (axis === 'horizontal') setCustomGridHorizontal(100);
+    if (axis === 'vertical') setCustomGridVertical(100);
+    if (axis === 'visual') setCustomGridVisualZoom(100);
+}
+
+function handleGridCornerKey(event, axis) {
+    if (!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Home'].includes(event.key)) return;
+    event.preventDefault();
+    if (event.key === 'Home') return resetCustomGridAxis(axis);
+    const increase = event.key === 'ArrowRight' || event.key === 'ArrowUp';
+    const current = axis === 'horizontal' ? gridHorizontalScale : axis === 'vertical' ? gridVerticalScale : gridVisualZoom;
+    const next = current + (increase ? 2 : -2);
+    if (axis === 'horizontal') setCustomGridHorizontal(next);
+    if (axis === 'vertical') setCustomGridVertical(next);
+    if (axis === 'visual') setCustomGridVisualZoom(next);
+}
+
+function resetCustomGrid() {
+    gridHorizontalScale = 100;
+    gridVerticalScale = 100;
+    gridVisualZoom = 100;
+    persistCurrentGridProfile();
+    queueCustomGridUpdate();
+}
+
+function openGridViewDialog() {
+    const dialog = document.getElementById('gridViewDialog');
+    updateGridViewControls();
+    dialog.classList.add('visible');
+    dialog.setAttribute('aria-hidden', 'false');
+    toggleOptions(false);
+    setTimeout(() => dialog.querySelector(`[data-grid-mode="${gridViewMode}"]`)?.focus({ preventScroll:true }), 20);
+}
+
+function closeGridViewDialog() {
+    const dialog = document.getElementById('gridViewDialog');
+    dialog.classList.remove('visible');
+    dialog.setAttribute('aria-hidden', 'true');
+    document.getElementById('btnPanToggle')?.focus({ preventScroll:true });
+    if (gridViewMode === 'custom') requestAnimationFrame(showGridCornerHint);
+}
+
+/* Compatibilidade com atalhos de versões anteriores. */
+function togglePanoramic() {
+    setGridViewMode(gridViewMode === 'compact' ? 'normal' : 'compact');
 }
 
 function updateViewSwitcher() {
@@ -2161,6 +2575,7 @@ function setViewMode(mode) {
     const enteringCalendar = mode === 'calendar' && previousViewMode !== 'calendar';
     viewMode = mode;
     localStorage.setItem(VIEW_MODE_KEY, viewMode);
+    loadGridProfileForView(viewMode);
     updateViewSwitcher();
 
     if (previousViewMode === 'calendar' && viewMode !== 'calendar') {
@@ -2292,6 +2707,10 @@ async function generateImage() {
     const element = document.getElementById(targetId);
     const button = document.getElementById('btnExport');
     const label = button ? button.querySelector('.btn-label') : null;
+    const gridClassSnapshot = {
+        compact: document.body.classList.contains('panoramic-mode'),
+        custom: document.body.classList.contains('custom-grid-mode')
+    };
 
     if (typeof html2canvas !== 'function') {
         alert('O recurso de exportação não carregou. Conecte-se à internet, recarregue a página e tente novamente.');
@@ -2306,6 +2725,7 @@ async function generateImage() {
     if (button) button.disabled = true;
     if (label) label.textContent = 'Gerando HD…';
     document.body.classList.add('capturing');
+    document.body.classList.remove('panoramic-mode', 'custom-grid-mode');
 
     try {
         await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
@@ -2344,6 +2764,8 @@ async function generateImage() {
         alert(`Não foi possível gerar a imagem: ${error.message || 'erro desconhecido'}`);
     } finally {
         document.body.classList.remove('capturing');
+        document.body.classList.toggle('panoramic-mode', gridClassSnapshot.compact);
+        document.body.classList.toggle('custom-grid-mode', gridClassSnapshot.custom);
         if (button) button.disabled = false;
         if (label) label.textContent = 'Exportar';
     }
@@ -2814,7 +3236,7 @@ function renderCalendar() {
     const firstDay = firstDayRaw === 0 ? 0 : firstDayRaw - 1;
     const daysInMonth = new Date(targetYear, targetMonth + 1, 0).getDate();
 
-    let html = `<div class="calendar-header-title">🗓️ ${monthNames[targetMonth]} DE ${targetYear}</div>`;
+    let html = `<div class="calendar-zoom-layer"><div class="calendar-header-title">🗓️ ${monthNames[targetMonth]} DE ${targetYear}</div>`;
     html += '<div class="calendar-grid">';
     
     const weekDays = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
@@ -2901,7 +3323,7 @@ function renderCalendar() {
     const totalCells = firstDay + renderedDays;
     const remainingCells = (6 - (totalCells % 6)) % 6;
     for (let i = 0; i < remainingCells; i++) { html += `<div class="cal-day empty"></div>`; }
-    html += '</div>';
+    html += '</div></div>';
     document.getElementById('calendar-area').innerHTML = html;
 }
 
@@ -3704,6 +4126,10 @@ function closeCalendarExportDialog() {
 }
 
 document.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && document.getElementById('gridViewDialog')?.classList.contains('visible')) {
+        closeGridViewDialog();
+        return;
+    }
     if (event.key === 'Escape' && document.getElementById('developerDialog')?.classList.contains('visible')) {
         closeDeveloperDialog();
         return;
@@ -4342,6 +4768,11 @@ function closePopupManual() {
     document.getElementById('nextClassPopup').classList.remove('visible');
 }
 
+window.addEventListener('pagehide', persistCurrentGridProfile);
+document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'hidden') persistCurrentGridProfile();
+});
+
 // 4. INICIALIZAÇÃO
 (function init() {
     const today = new Date();
@@ -4366,10 +4797,8 @@ function closePopupManual() {
     const months = [{n:'Ago',v:'/08'},{n:'Set',v:'/09'},{n:'Out',v:'/10'},{n:'Nov',v:'/11'},{n:'Dez',v:'/12'}];
     document.getElementById('monthButtons').innerHTML = months.map(m => `<button class="filter-btn" onclick="setFilter('${m.v}')">${m.n}</button>`).join('');
     
-    if(localStorage.getItem('panoramicMode') === 'true') {
-        document.body.classList.add('panoramic-mode');
-        document.getElementById('btnPanToggle').classList.add('active');
-    }
+    setGridControlsCollapsed(gridControlsCollapsed, false);
+    setGridViewMode(gridViewMode, { persist:false });
 
     updateViewSwitcher();
 
