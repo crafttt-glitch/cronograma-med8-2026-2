@@ -2269,14 +2269,8 @@ function getClassPresentation(item) {
     return null;
 }
 
-/* Estados especiais: a aula permanece visível, mas não entra nos cálculos. */
-const CLASS_STATE_RULES = [
-    {
-        key: 'pending',
-        excludedFromCalculations: true,
-        matches: item => getClassFamily(item) === 'hrba-aud'
-    }
-];
+/* Estados especiais por aula. Kalysta/Auditório voltou ao estado normal. */
+const CLASS_STATE_RULES = [];
 
 function getClassState(item) {
     return CLASS_STATE_RULES.find(rule => rule.matches(item)) || null;
