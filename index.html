@@ -2059,6 +2059,32 @@ function applyOfficialNeuroFallback(items) {
     ];
 }
 
+// Municipal: 08/10 (B) e 15/10 (C) não têm atividade, mas consomem a vez.
+// A correção local também se aplica ao CSV sincronizado, sem editar a planilha.
+function applyMunicipalNeuroRotation(items) {
+    const isMunicipal = item => (item.classFamily || getClassFamily(item)) === 'hms-neuro' && /^[ABCD]$/.test(item.g);
+    const datesOf = item => String(item.dates || '').split(',').map(date => date.trim()).filter(Boolean);
+    const affected = date => /^\d{2}\/\d{2}$/.test(date) && Number(date.slice(3)) >= 10;
+    const cancelled = new Set(['08/10', '15/10']);
+    const municipal = items.filter(isMunicipal);
+    const dates = [...new Set(municipal.flatMap(datesOf))].filter(date => affected(date) && !cancelled.has(date));
+    const groupFor = date => {
+        const [day, month] = date.split('/').map(Number);
+        const weeks = Math.round((Date.UTC(2026, month - 1, day) - Date.UTC(2026, 9, 1)) / (7 * 86400000));
+        return 'ABCD'[((weeks % 4) + 4) % 4];
+    };
+    const details = Object.assign({}, ...municipal.map(item => item.detailMap || {}));
+    const metadata = Object.assign({}, ...municipal.map(item => item.occurrenceMeta || {}));
+    return items.map(item => {
+        if (!isMunicipal(item)) return item;
+        const assigned = [...datesOf(item).filter(date => !affected(date)), ...dates.filter(date => groupFor(date) === item.g)]
+            .sort((a, b) => Number(a.slice(3)) - Number(b.slice(3)) || Number(a.slice(0, 2)) - Number(b.slice(0, 2)));
+        return { ...item, dates:assigned.join(', '),
+            detailMap:Object.fromEntries(assigned.map(date => [date, details[date] || 'Discussão de casos — rodízio hospitalar'])),
+            occurrenceMeta:Object.fromEntries(assigned.map(date => [date, metadata[date] || { h:item.h || '', l:item.l || '', d:item.d || '', t:item.t || '' }])) };
+    }).filter(item => !isMunicipal(item) || item.dates);
+}
+
 function processarDados(csvText) {
     try {
         const rows = parseCSV(csvText);
@@ -2127,9 +2153,9 @@ function processarDados(csvText) {
         }
         
         // Compatibilidade: enquanto o Google CSV ainda não tiver a nova coluna,
-        // aplica a sequência oficial sem deixar feriados consumirem a vez.
+        // aplica a programação oficial; o ajuste municipal é feito nas duas fontes.
         const structuredSource = idx.details >= 0;
-        DATA_LEGO = splitSpecialNeuroEvents(consolidateThemedItems(structuredSource ? novoLego : applyOfficialNeuroFallback(novoLego)));
+        DATA_LEGO = splitSpecialNeuroEvents(applyMunicipalNeuroRotation(consolidateThemedItems(structuredSource ? novoLego : applyOfficialNeuroFallback(novoLego))));
         updateView(true); 
         return true;
     } catch (e) {
